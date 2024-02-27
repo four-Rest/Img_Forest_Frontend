@@ -5,7 +5,7 @@ import {useParams} from 'react-router-dom';
 function ArticleTag () {
 
     const {tagString}  = useParams();
-
+    const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
 
     const {searchTag}  = useContext(SearchTagContext);
@@ -33,7 +33,7 @@ function ArticleTag () {
       ? <div className="container pt-24">
          {articleData.map((article) => (
           <div key={article.id} className="box">
-            <img src={`/imgFiles/${article.imgFilePath}/${article.imgFileName}`} alt="a" />
+            <img src={`${apiUrl}/gen/${article.imgFilePath}/${article.imgFileName}`} alt="a" />
           </div>
         ))}
       </div>

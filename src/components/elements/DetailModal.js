@@ -255,6 +255,10 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 
 
   const handleDownload = () => {
+    if(paid) {
+      toastNotice('유료 게시물은 결제가 필요합니다.');
+      return;
+    }
     const imagePath = `${apiUrl}/gen/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };

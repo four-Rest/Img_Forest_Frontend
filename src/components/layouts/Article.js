@@ -9,7 +9,7 @@ function Article() {
     const [imageFile, setImageFile] = useState(null);
 
     // false 무료 / true 유료 
-    const [isPaid, setIsPaid] = useState(false);
+    const [paid, setPaid] = useState(false);
     const [price,setPrice] = useState('');
 
     const navigate = useNavigate();
@@ -17,7 +17,7 @@ function Article() {
     const { isLogin } = useAuth();
 
     const renderPriceInput = () => {
-        if(isPaid) {
+        if(paid) {
             return (
                 <div className="card-body p-1">
                     <label htmlFor="price" className="card-title">가격</label>
@@ -53,6 +53,8 @@ function Article() {
             formData.append('multipartFile', imageFile);
             formData.append('content', content);
             formData.append('tagString', tagString);
+            formData.append('price',price);
+            formData.append('paid', paid);
             console.log(formData);
             const response = await fetch(`${apiUrl}/api/article`, {
                 method: "POST",
@@ -63,6 +65,7 @@ function Article() {
             if (response.ok) {
                 console.log("게시글이 작성되었습니다.")
                 toastNotice('게시글이 작성되었습니다.');
+                navigate('/');
             } else {
                 console.log("게시글 작성에 실패했습니다.")
                 toastWarning('게시글 작성에 실패했습니다.');
@@ -86,13 +89,13 @@ function Article() {
     }
 
     function handleCheckboxChange(event) {
-        setIsPaid(event.target.checked);
+        setPaid(event.target.checked);
     }
 
     // 체크여부 확인용 
     useEffect(() => {
-        console.log(isPaid);
-    }, [isPaid]);
+        console.log(paid);
+    }, [paid]);
 
     return (
         <section className="form-container">
@@ -117,8 +120,8 @@ function Article() {
                         </div>
 
                         <div className="card-body p-1">
-                            <label htmlFor="isPaid" className="card-title">유료화 선택</label>
-                            <input type="checkbox" checked={isPaid} onChange={handleCheckboxChange}></input>
+                            <label htmlFor="paid" className="card-title">유료화 선택</label>
+                            <input type="checkbox" checked={paid} onChange={handleCheckboxChange}></input>
                             
                         </div>
                         {renderPriceInput()}

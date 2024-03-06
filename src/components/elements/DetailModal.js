@@ -255,11 +255,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 
 
   const handleDownload = () => {
-    if(paid) {
-      toastNotice('유료 게시물은 결제가 필요합니다.');
-      return;
-    }
-    const imagePath = `/imgFiles/${imgFilePath}/${imgFileName}`;
+    const imagePath = `${apiUrl}/gen/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
 
@@ -321,7 +317,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
             ✕
           </label>
           <div className="detailModalLeft">
-            <img src={`/imgFiles/${imgFilePath}/${imgFileName}`} alt="Article" />
+            <img src={`${apiUrl}/gen/${imgFilePath}/${imgFileName}`} alt="Article" />
           </div>
           <div className="detailModalRight">
             <div className="tags-container">

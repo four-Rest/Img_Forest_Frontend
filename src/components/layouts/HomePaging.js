@@ -72,7 +72,7 @@ function HomePaging() {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/article?pageNo=${pageNo}&pageSize=${pageSize}`
+          `${apiBaseUrl}/article?pageNo=${pageNo}&pageSize=${pageSize}`
         );
         const data = await res.json();
         console.log(data.data);

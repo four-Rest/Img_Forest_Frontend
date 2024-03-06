@@ -7,6 +7,9 @@ function Article() {
     const [content, setContent] = useState('');
     const [tagString, setTagString] = useState('');
     const [imageFile, setImageFile] = useState(null);
+
+    // false 무료 / true 유료 
+    const [isPaid, setIsPaid] = useState(false);
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
     const { isLogin } = useAuth();
@@ -29,6 +32,7 @@ function Article() {
                 toastWarning('게시글 제목을 작성해주세요.');
                 return;
             }
+
 
             const formData = new FormData();
             formData.append('multipartFile', imageFile);
@@ -66,6 +70,14 @@ function Article() {
         }
     }
 
+    function handleCheckboxChange(event) {
+        setIsPaid(event.target.checked);
+    }
+
+    useEffect(() => {
+        console.log(isPaid);
+    }, [isPaid]);
+
     return (
         <section className="form-container">
             <div className="card shadow-xl">
@@ -86,6 +98,12 @@ function Article() {
                         <div className="card-body p-1">
                             <label htmlFor="tag" className="card-title">태그</label>
                             <input type="text" value={tagString} onChange={(e) => setTagString(e.target.value)} id="tag" placeholder="태그를 입력하세요. 띄어쓰기로 구분됩니다." className="input-field textarea textarea-bordered" />
+                        </div>
+
+                        <div className="card-body p-1">
+                            <label htmlFor="isPaid" className="card-title">유료화 선택</label>
+                            <input type="checkbox" checked={isPaid} onChange={handleCheckboxChange}></input>
+                            
                         </div>
 
                         <button type="button" onClick={createArticle} className="btn">작성</button>

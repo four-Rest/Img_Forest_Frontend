@@ -10,9 +10,24 @@ function Article() {
 
     // false 무료 / true 유료 
     const [isPaid, setIsPaid] = useState(false);
+    const [price,setPrice] = useState('');
+
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
     const { isLogin } = useAuth();
+
+    const renderPriceInput = () => {
+        if(isPaid) {
+            return (
+                <div className="card-body p-1">
+                    <label htmlFor="price" className="card-title">가격</label>
+                    <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} id="price" placeholder="가격을 입력하세요" className="input-field textarea textarea-bordered"/>
+                </div>
+            );
+        }else {
+            return null; 
+        }
+    };
 
     async function createArticle() {
 
@@ -74,6 +89,7 @@ function Article() {
         setIsPaid(event.target.checked);
     }
 
+    // 체크여부 확인용 
     useEffect(() => {
         console.log(isPaid);
     }, [isPaid]);
@@ -105,7 +121,7 @@ function Article() {
                             <input type="checkbox" checked={isPaid} onChange={handleCheckboxChange}></input>
                             
                         </div>
-
+                        {renderPriceInput()}
                         <button type="button" onClick={createArticle} className="btn">작성</button>
                     </div>
                 </div>

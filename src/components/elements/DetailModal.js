@@ -256,7 +256,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 
   const handleDownload = () => {
     if(paid) {
-      toastNotice('유료 게시물은 다운로드 할 수 없습니다');
+      toastNotice('유료 게시물은 결제가 필요합니다.');
       return;
     }
     const imagePath = `/imgFiles/${imgFilePath}/${imgFileName}`;

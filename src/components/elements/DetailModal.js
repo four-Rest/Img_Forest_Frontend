@@ -300,6 +300,56 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       return `${seconds}초`;
     }
   };
+  const handleReplyComment = async (parentId, replyContent) => {
+    try {
+      const name = localStorage.getItem("username");
+      const response = await fetch(`${apiUrl}/api/comment/reply/${parentId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          parentId: parentId, // 부모 댓글의 ID 전달
+          username: name,
+          content: replyContent,
+        }),
+      });
+
+      if (response.ok) {
+        const newReplyData = await response.json(); // 새 대댓글 데이터
+        const newReply = {
+          ...newReplyData.data,
+          username: name, // 새 대댓글 객체에 username 추가
+          removedTime: null,
+        };
+
+        // 새 대댓글을 목록에 추가
+        setDetail((prevDetail) => {
+          const updatedComments = prevDetail.listCommentResponses.map((comment) => {
+            if (comment.id === parentId) {
+              // 부모 댓글을 찾아서 대댓글 추가
+              return {
+                ...comment,
+                listReplies: [...comment.listReplies, newReply],
+              };
+            }
+            return comment;
+          });
+          return {
+            ...prevDetail,
+            listCommentResponses: updatedComments,
+          };
+        });
+      } else {
+        console.error("대댓글 생성 실패");
+        // 실패 시 사용자에게 알림
+      }
+    } catch (error) {
+      console.error("에러 발생:", error);
+      // 네트워크 오류 처리
+    }
+  };
 
   return (
       <div
@@ -401,6 +451,13 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                                     }
                                 >
                                   수정
+                                </button>
+                                <button
+                                    onClick={() =>
+                                      handleReplyComment(comment.id)
+                                  }
+                                >
+                                  대댓글
                                 </button>
                               </div>
                           )}

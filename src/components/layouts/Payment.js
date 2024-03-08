@@ -31,7 +31,7 @@ const Payment = () => {
             pay_method: 'card',
             merchant_uid: new Date().getTime(),
             name: '테스트 상품',
-            amount: 1000,
+            amount: 2000,
             buyer_name: '찬홍',
             buyer_tel:'010-9896-4220',
 
@@ -54,7 +54,7 @@ const Payment = () => {
 
     return (
         <div>
-            <button onClick = {requestPay}>결제하기</button>
+            <button className = "pt-56" onClick = {requestPay}>결제하기</button>
         </div>
     );
 };

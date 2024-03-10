@@ -20,6 +20,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [editingCommentId, setEditingCommentId] = useState(null); // 현재 수정 중인 댓글 ID
   const [editingContent, setEditingContent] = useState(""); // 수정 중인 댓글 내용
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
   const navigate = useNavigate();
 
 
@@ -272,7 +273,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       toastNotice('유료 게시물은 결제가 필요합니다.');
       return;
     }
-    const imagePath = `${apiUrl}/gen/${imgFilePath}/${imgFileName}`;
+    const imagePath = `${imgUrl}/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
 
@@ -334,7 +335,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
             ✕
           </label>
           <div className="detailModalLeft">
-            <img src={`${apiUrl}/gen/${imgFilePath}/${imgFileName}`} alt="Article" />
+            <img src={`${imgUrl}/${imgFilePath}/${imgFileName}`} alt="Article" />
           </div>
           <div className="detailModalRight">
             <div className="tags-container">

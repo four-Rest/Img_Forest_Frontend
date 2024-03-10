@@ -6,7 +6,7 @@ function ArticleTag () {
 
     const {tagString}  = useParams();
     const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
-
+    const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
 
     const {searchTag}  = useContext(SearchTagContext);
     const [articleData, setArticleData] = useState([]);
@@ -14,7 +14,7 @@ function ArticleTag () {
         const fetchData = async() => {
 
             try{
-                const res = await fetch(`/api/article/${tagString}`);
+                const res = await fetch(`${apiUrl}/article/${tagString}`);
                 const data = await res.json();
                 const dataArray = Array.from (data.data);
                 console.log(dataArray);
@@ -33,7 +33,7 @@ function ArticleTag () {
       ? <div className="container pt-24">
          {articleData.map((article) => (
           <div key={article.id} className="box">
-            <img src={`${apiUrl}/gen/${article.imgFilePath}/${article.imgFileName}`} alt="a" />
+            <img src={`${imgUrl}/${article.imgFilePath}/${article.imgFileName}`} alt="a" />
           </div>
         ))}
       </div>

@@ -22,6 +22,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const navigate = useNavigate();
 
+
   useEffect(() => {
     if (!articleId) return;
 
@@ -252,7 +253,12 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     document.body.removeChild(link); // DOM에서 링크 제거
   };
 
+
   const handleDownload = () => {
+    if(paid) {
+      toastNotice('유료 게시물은 결제가 필요합니다.');
+      return;
+    }
     const imagePath = `${apiUrl}/gen/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
@@ -338,7 +344,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                     {price}원
                   </p>
               )}
-              <button onClick={handleDownload} className="downloadBtn">
+              <button onClick={handleDownload} className="downloadBtn" disabled={paid}>
                 저장
               </button>
               {localStorage.getItem("username") === username && (

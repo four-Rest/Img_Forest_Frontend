@@ -123,7 +123,7 @@ function HomePaging() {
       {articleData.map((article) => (
         <div key={article.id} className="box">
           <img
-            src={`/imgFiles/${article.imgFilePath}/${article.imgFileName}`}
+            src={`${apiUrl}/gen/${article.imgFilePath}/${article.imgFileName}`}
             alt="a"
             onClick={() => handleImageClick(article.id)}
           />

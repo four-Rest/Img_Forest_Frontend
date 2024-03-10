@@ -24,6 +24,7 @@ function MyArticle () {
     const [showDetailModal, setShowDetailModal] = useState(false); // 상세보기를 위한 변수
 
     const apiBaseUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+    const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
 
     const target = useRef(null);
     const handleImageClick = (id) => {
@@ -49,7 +50,7 @@ function MyArticle () {
             setLoading(true);
             try {
                 const res = await fetch(
-                    `/api/article/page?pageNo=${pageNo}&userNick=${userNick}`
+                    `${apiBaseUrl}/article/page?pageNo=${pageNo}&userNick=${userNick}`
                     );
                 const data = await res.json();
 
@@ -97,7 +98,7 @@ function MyArticle () {
             {articleData.map((article) => (
                 <div key={article.id} className="box">
                     <img
-                        src={`/imgFiles/${article.imgFilePath}/${article.imgFileName}`}
+                        src={`${imgUrl}/${article.imgFilePath}/${article.imgFileName}`}
                         alt="a"
                         onClick={() => handleImageClick(article.id)}
                     />

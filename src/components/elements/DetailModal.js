@@ -20,7 +20,9 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [editingCommentId, setEditingCommentId] = useState(null); // 현재 수정 중인 댓글 ID
   const [editingContent, setEditingContent] = useState(""); // 수정 중인 댓글 내용
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
   const navigate = useNavigate();
+
 
   useEffect(() => {
     if (!articleId) return;
@@ -243,17 +245,35 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       (comment) => comment.removedTime === null
   ).length;
   //이미지 다운로드
-  const downloadImage = (path, filename) => {
+
+  const downloadImage = async (path, filename) => {
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error('Network response was not ok.');
+
+    const blob = await response.blob(); // 응답을 Blob으로 변환합니다.
+    const url = window.URL.createObjectURL(blob); // Blob에서 URL을 생성합니다.
+
     const link = document.createElement("a");
-    link.href = path;
-    link.download = filename;
-    document.body.appendChild(link); // DOM에 링크 추가
-    link.click(); // 링크 클릭
-    document.body.removeChild(link); // DOM에서 링크 제거
-  };
+    link.href = url;
+    link.download = filename; // 설정된 파일 이름으로 다운로드합니다.
+    document.body.appendChild(link);
+    link.click(); // 링크를 프로그래매틱하게 클릭하여 다운로드를 시작합니다.
+
+    document.body.removeChild(link); // 사용 후 링크를 제거합니다.
+    window.URL.revokeObjectURL(url); // 생성된 URL을 정리합니다.
+  } catch (error) {
+    console.error("이미지 다운로드 중 에러 발생:", error);
+    // 적절한 사용자 피드백 제공
+  }
+};
 
   const handleDownload = () => {
-    const imagePath = `/imgFiles/${imgFilePath}/${imgFileName}`;
+    if(paid) {
+      toastNotice('유료 게시물은 결제가 필요합니다.');
+      return;
+    }
+    const imagePath = `${imgUrl}/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
 
@@ -315,7 +335,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
             ✕
           </label>
           <div className="detailModalLeft">
-            <img src={`/imgFiles/${imgFilePath}/${imgFileName}`} alt="Article" />
+            <img src={`${imgUrl}/${imgFilePath}/${imgFileName}`} alt="Article" />
           </div>
           <div className="detailModalRight">
             <div className="tags-container">
@@ -338,7 +358,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                     {price}원
                   </p>
               )}
-              <button onClick={handleDownload} className="downloadBtn">
+              <button onClick={handleDownload} className="downloadBtn" disabled={paid}>
                 저장
               </button>
               {localStorage.getItem("username") === username && (

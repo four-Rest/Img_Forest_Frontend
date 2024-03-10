@@ -5,6 +5,7 @@ const Detail = () => {
   const { id } = useParams();
   const [detail, setDetail] = useState(null);
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +50,7 @@ const Detail = () => {
   };
 
   const handleDownload = () => {
-    const imagePath = `/imgFiles/${imgFilePath}/${imgFileName}`;
+    const imagePath = `${imgUrl}/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
 
@@ -57,7 +58,7 @@ const Detail = () => {
     <div>
       <div>
         <div className="box">
-          <img src={`/imgFiles/${imgFilePath}/${imgFileName}`} alt="dd" />
+          <img src={`${imgUrl}/${imgFilePath}/${imgFileName}`} alt="dd" />
           <button onClick={handleDownload}>Download Image</button>
         </div>
         <h2>content == {content}</h2>

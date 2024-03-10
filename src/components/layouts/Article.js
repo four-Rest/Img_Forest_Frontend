@@ -7,9 +7,27 @@ function Article() {
     const [content, setContent] = useState('');
     const [tagString, setTagString] = useState('');
     const [imageFile, setImageFile] = useState(null);
+
+    // false 무료 / true 유료 
+    const [paid, setPaid] = useState(false);
+    const [price,setPrice] = useState('');
+
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
     const { isLogin } = useAuth();
+
+    const renderPriceInput = () => {
+        if(paid) {
+            return (
+                <div className="card-body p-1">
+                    <label htmlFor="price" className="card-title">가격</label>
+                    <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} id="price" placeholder="가격을 입력하세요" className="input-field textarea textarea-bordered"/>
+                </div>
+            );
+        }else {
+            return null; 
+        }
+    };
 
     async function createArticle() {
 
@@ -30,10 +48,13 @@ function Article() {
                 return;
             }
 
+
             const formData = new FormData();
             formData.append('multipartFile', imageFile);
             formData.append('content', content);
             formData.append('tagString', tagString);
+            formData.append('price',price);
+            formData.append('paid', paid);
             console.log(formData);
             const response = await fetch(`${apiUrl}/api/article`, {
                 method: "POST",
@@ -44,6 +65,7 @@ function Article() {
             if (response.ok) {
                 console.log("게시글이 작성되었습니다.")
                 toastNotice('게시글이 작성되었습니다.');
+                navigate('/');
             } else {
                 console.log("게시글 작성에 실패했습니다.")
                 toastWarning('게시글 작성에 실패했습니다.');
@@ -65,6 +87,15 @@ function Article() {
             console.error('파일을 선택해주세요.');
         }
     }
+
+    function handleCheckboxChange(event) {
+        setPaid(event.target.checked);
+    }
+
+    // 체크여부 확인용 
+    useEffect(() => {
+        console.log(paid);
+    }, [paid]);
 
     return (
         <section className="form-container">
@@ -88,6 +119,12 @@ function Article() {
                             <input type="text" value={tagString} onChange={(e) => setTagString(e.target.value)} id="tag" placeholder="태그를 입력하세요. 띄어쓰기로 구분됩니다." className="input-field textarea textarea-bordered" />
                         </div>
 
+                        <div className="card-body p-1">
+                            <label htmlFor="paid" className="card-title">유료화 선택</label>
+                            <input type="checkbox" checked={paid} onChange={handleCheckboxChange}></input>
+                            
+                        </div>
+                        {renderPriceInput()}
                         <button type="button" onClick={createArticle} className="btn">작성</button>
                     </div>
                 </div>

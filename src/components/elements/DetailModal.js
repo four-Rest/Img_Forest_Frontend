@@ -19,6 +19,9 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
   const [editingCommentId, setEditingCommentId] = useState(null); // 현재 수정 중인 댓글 ID
   const [editingContent, setEditingContent] = useState(""); // 수정 중인 댓글 내용
+  const [isReplying, setIsReplying] = useState(false); // 대댓글 작성 상태
+  const [replyingCommentId, setReplyingCommentId] = useState(null); // 현재 대댓글 작성 중인 댓글
+  const [replyingContent, setReplyingContent] = useState(""); // 대댓글 내용
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -300,19 +303,23 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       return `${seconds}초`;
     }
   };
-  const handleReplyComment = async (parentId, replyContent) => {
+// 대댓글 입력 상태를 변경하는 함수
+  const toggleReplying = (commentId) => {
+    setIsReplying(true); // 대댓글 작성 상태로 변경
+    setReplyingCommentId(commentId); // 대댓글 작성 중인 댓글 ID 설정
+  };
+
+// 대댓글 작성 함수
+  const handleReplyComment = async (commentId) => {
     try {
-      const name = localStorage.getItem("username");
-      const response = await fetch(`${apiUrl}/api/comment/reply/${parentId}`, {
+      const response = await fetch(`${apiUrl}/api/comment/${commentId}/reply`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          parentId: parentId, // 부모 댓글의 ID 전달
-          username: name,
-          content: replyContent,
+          content: replyingContent // 대댓글 내용 사용
         }),
       });
 
@@ -320,14 +327,13 @@ function DetailModal({ showModal, setShowModal, articleId }) {
         const newReplyData = await response.json(); // 새 대댓글 데이터
         const newReply = {
           ...newReplyData.data,
-          username: name, // 새 대댓글 객체에 username 추가
           removedTime: null,
         };
 
         // 새 대댓글을 목록에 추가
         setDetail((prevDetail) => {
           const updatedComments = prevDetail.listCommentResponses.map((comment) => {
-            if (comment.id === parentId) {
+            if (comment.id === commentId) {
               // 부모 댓글을 찾아서 대댓글 추가
               return {
                 ...comment,
@@ -341,6 +347,11 @@ function DetailModal({ showModal, setShowModal, articleId }) {
             listCommentResponses: updatedComments,
           };
         });
+
+        // 대댓글 입력 상태 초기화
+        setIsReplying(false);
+        setReplyingCommentId(null);
+        setReplyingContent("");
       } else {
         console.error("대댓글 생성 실패");
         // 실패 시 사용자에게 알림
@@ -349,6 +360,26 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       console.error("에러 발생:", error);
       // 네트워크 오류 처리
     }
+  };
+
+// 대댓글 입력 창 UI
+  const renderReplyInput = (commentId) => {
+    return (
+        <div className="reply-input-container">
+          <input
+              type="text"
+              value={replyingContent}
+              onChange={(e) => setReplyingContent(e.target.value)}
+              placeholder="대댓글을 입력하세요..."
+          />
+          <button onClick={() => handleReplyComment(commentId)}>저장</button>
+        </div>
+    );
+  };
+
+// 대댓글 작성 버튼 클릭 시 대댓글 입력 창을 표시하는 함수
+  const handleReplyButtonClick = (commentId) => {
+    toggleReplying(commentId); // 대댓글 작성 상태를 활성화
   };
 
   return (
@@ -437,30 +468,24 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                             <strong>{comment.username}</strong>: {comment.content}
                             <br />
                             <span className="commentTime">
-                        {calculateTimeAgo(comment.createdDate)}
-                      </span>
+          {calculateTimeAgo(comment.createdDate)}
+        </span>
                           </div>
                           {localStorage.getItem("username") === comment.username && (
                               <div className="commentActions">
                                 <button onClick={() => handleDeleteComment(comment.id)}>
                                   삭제
                                 </button>
-                                <button
-                                    onClick={() =>
-                                        handleEditComment(comment.id, comment.content)
-                                    }
-                                >
+                                <button onClick={() => handleEditComment(comment.id, comment.content)}>
                                   수정
                                 </button>
-                                <button
-                                    onClick={() =>
-                                      handleReplyComment(comment.id)
-                                  }
-                                >
+                                <button onClick={() => handleReplyButtonClick(comment.id)}>
                                   대댓글
                                 </button>
                               </div>
                           )}
+                          {/* 대댓글 입력 창 */}
+                          {isReplying && replyingCommentId === comment.id && renderReplyInput(comment.id)}
                         </li>
                     ))}
               </ul>

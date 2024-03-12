@@ -337,7 +337,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
               // 부모 댓글을 찾아서 대댓글 추가
               return {
                 ...comment,
-                listReplies: [...comment.listReplies, newReply],
+                listReplies: comment.listReplies ? [...comment.listReplies, newReply] : [newReply],
               };
             }
             return comment;
@@ -365,7 +365,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 // 대댓글 입력 창 UI
   const renderReplyInput = (commentId) => {
     return (
-        <div className="reply-input-container">
+        <div className="reply-input-container" style={{ marginLeft: "20px" }}>
           <input
               type="text"
               value={replyingContent}
@@ -468,8 +468,8 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                             <strong>{comment.username}</strong>: {comment.content}
                             <br />
                             <span className="commentTime">
-          {calculateTimeAgo(comment.createdDate)}
-        </span>
+                      {calculateTimeAgo(comment.createdDate)}
+                    </span>
                           </div>
                           {localStorage.getItem("username") === comment.username && (
                               <div className="commentActions">
@@ -486,6 +486,21 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                           )}
                           {/* 대댓글 입력 창 */}
                           {isReplying && replyingCommentId === comment.id && renderReplyInput(comment.id)}
+                          {comment.listReplies && (
+                              <ul>
+                                {comment.listReplies.map((reply, idx) => (
+                                    <li key={idx} className="replyItem">
+                                      <div className="replyContent">
+                                        <strong>{reply.username}</strong>: {reply.content}
+                                        <br />
+                                        <span className="replyTime">
+                              {calculateTimeAgo(reply.createdDate)}
+                            </span>
+                                      </div>
+                                    </li>
+                                ))}
+                              </ul>
+                          )}
                         </li>
                     ))}
               </ul>

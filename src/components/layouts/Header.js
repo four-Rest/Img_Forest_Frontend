@@ -25,6 +25,10 @@ const Header = () => {
   const [searchTag, setSearchTag] = useState("");
   const { updateSearchTag } = useContext(SearchTagContext);
 
+  /* 24.03.14 메모. news 기본값은 data fetch로 설정? */
+  const testNewsValue = true; /* 24.03.14 메모. 테스트 임시 변수 */
+  const [news, setNews] = useState(testNewsValue);
+
   const [userNick, setUserNick] = useState("");
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
@@ -68,6 +72,12 @@ const Header = () => {
       updateSearchTag({ tag: searchTag });
       navigate(`/article/${searchTag}`);
     }
+  };
+
+  const showNotification = () => {
+    console.log("showNotification");
+    setNews(false);
+    /* 24.03.14 메모. news 값을 계정별로 저장하는 방법? */
   };
 
   useEffect(() => {
@@ -245,24 +255,66 @@ const Header = () => {
               />
             </div>
           )}
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item"></span>
-            </div>
-          </button>
+          {/* 24.03.14 메모. 알림 버튼은 추후 isLogin을 해야지만 보이도록 설정. 
+           현재 개발단계로 isLogin이 false 일 때 보이게 함.*/}
+          {/* 24.03.14 메모. open or close를 위한
+          Dropdown menu using <details> tag 선택지는 잠시 보류 */}
+          {isLogin ? (
+            ""
+          ) : (
+            <>
+              <div className="dropdown dropdown-bottom dropdown-end">
+                {/* <div tabIndex={0} role="button"> */}
+                <button
+                  className="btn btn-ghost btn-circle"
+                  onClick={showNotification}>
+                  <div className="indicator">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      />
+                    </svg>
+                    {news ? (
+                      <span className="badge badge-xs badge-primary indicator-item"></span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </button>
+                {/* </div> */}
+                {/* 24.03.14 메모. img 크기 고정 필요성 고민*/}
+                {/* 24.03.14 메모. Link 누르면 클릭 배경색 고정되는 것(로그인 모달도 동일)*/}
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80">
+                  {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성 */}
+                  <li>
+                    <Link to={`/`}>
+                      <p>👍 {"user1"}님이 좋아합니다.</p>
+                      <img src="https://api.img.for-rest.site/gen/2024/02/16/8a79a2ad-f784-4fd9-8224-7d20979ab2aa_%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A5%E1%84%83%E1%85%A5%E1%87%81%E1%84%87%E1%85%A1%E1%86%B8.jpeg" />
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/`}>
+                      <div>
+                        <p>💬 {"user2"}님이 댓글을 남겼습니다.</p>
+                        <p>{'"맨유 화이팅"'}</p>
+                      </div>
+                      <img src="https://api.img.for-rest.site/gen/2024/02/15/b3b6bfc6-e991-44e1-92da-28a3442dc571_GSqw_BIlGyvXvU0FmljNnmaLUlBbHkwtYed-WTUvHryz9TMbsB1YtTYGCvJ09Xy-8kAl_iLR00GeAe7PHjWyzVzAvrQBsslpvUGU63H97099GwSISLUXNhliW11BMXc97dacZyLqCVoVWMEssNPrjw.webp" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />

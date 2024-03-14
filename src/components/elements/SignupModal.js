@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { toastNotice, toastWarning } from "../ToastrConfig";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faComment
-} from "@fortawesome/free-solid-svg-icons";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
+import "./SignupModal.css";
 
 const SignupModal = ({ showModal, setShowModal }) => {
   const [username, setUsername] = useState("");
@@ -11,6 +10,7 @@ const SignupModal = ({ showModal, setShowModal }) => {
   const [password2, setPassword2] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
+  const [code, setCode] = useState(""); // 인증코드 변수명 지정 필요 // 인증코드 길이 지정 필요
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
   const signupData = {
@@ -69,6 +69,20 @@ const SignupModal = ({ showModal, setShowModal }) => {
     );
   }
 
+  function onSendCode() {
+    /* code를 보내는 로직 */
+
+    alert("이메일로 인증코드가 전송되었습니다.");
+  }
+
+  function onEmailCheck() {
+    // console.log(code);
+    /*  */
+    /* 입력한 code와 전송한 code가 일치하는지 확인 */
+    /* 입력code와 전송code의 변수를 다르게 해야할지도*/
+    /* 일치하면 bool 변수로 회원가입 가능한 상태로 */
+  }
+
   if (!showModal) return null;
 
   const handleKakaoLogin = () => {
@@ -91,8 +105,7 @@ const SignupModal = ({ showModal, setShowModal }) => {
               <label
                 htmlFor="login-modal"
                 className="btn btn-sm btn-circle absolute right-2 top-2"
-                onClick={() => setShowModal(false)}
-              >
+                onClick={() => setShowModal(false)}>
                 ✕
               </label>
               <h3 className="font-bold text-3xl text-center mb-4">회원가입</h3>
@@ -136,13 +149,30 @@ const SignupModal = ({ showModal, setShowModal }) => {
                 <label className="label w-full max-w-md">
                   <span className="label-text">이메일</span>
                 </label>
-                <input
-                  type="email"
-                  placeholder="이메일를 입력해주세요."
-                  className="input input-bordered w-full max-w-md"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="verify-email">
+                  <input
+                    type="email"
+                    placeholder="이메일을 입력해주세요."
+                    className="input input-bordered w-full max-w-md"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <button type="button" onClick={onSendCode} className="btn">
+                    인증코드 발송
+                  </button>
+                </div>
+                <div className="verify-email">
+                  <input
+                    type="text"
+                    placeholder="인증코드 입력"
+                    className="input input-bordered w-full "
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                  />
+                  <button type="button" className="btn" onClick={onEmailCheck}>
+                    인증하기
+                  </button>
+                </div>
               </div>
               <div className="form-control w-full mb-4 flex flex-col items-center">
                 <label className="label w-full max-w-md">
@@ -161,8 +191,7 @@ const SignupModal = ({ showModal, setShowModal }) => {
                 <button
                   type="submit"
                   className="btn btn-outline w-full max-w-xs"
-                  onClick={handleSignup}
-                >
+                  onClick={handleSignup}>
                   회원가입
                 </button>
               </div>
@@ -170,8 +199,7 @@ const SignupModal = ({ showModal, setShowModal }) => {
                 <button
                   type="button"
                   className="btn btn-warning w-full max-w-xs"
-                  onClick={handleKakaoLogin}
-                >
+                  onClick={handleKakaoLogin}>
                   <FontAwesomeIcon icon={faComment} />
                   카카오 로그인
                 </button>

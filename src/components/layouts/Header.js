@@ -131,21 +131,18 @@ const Header = () => {
           height: "40px",
           width: "100%",
           zIndex: 9999,
-        }}
-      >
+        }}>
         <div className="navbar-start">
           <div className="dropdown">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle"
-            >
+              className="btn btn-ghost btn-circle">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -156,26 +153,25 @@ const Header = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
               {isLogin ? (
                 <>
                   <li>
-                    <Link 
+                    <Link
                       className="nav-link"
                       onClick={() => {
                         setShowSignupModal(false);
                         setShowLoginModal(false);
                         setShowModifyModal(true);
-                        }
-                      }>
+                      }}>
                       <FontAwesomeIcon icon={faAddressCard} /> 내 정보 수정
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to={`/myarticle/${storedNick !== null ? storedNick : ""}`}
-                    >
+                      to={`/myarticle/${
+                        storedNick !== null ? storedNick : ""
+                      }`}>
                       <FontAwesomeIcon icon={faRectangleList} /> 내 글 보기
                     </Link>
                   </li>
@@ -194,25 +190,13 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link
-                      className="nav-link"
-                      onClick={() => {
-                        setShowSignupModal(false);
-                        setShowLoginModal(true);
-                      }}
-                    >
+                    <Link className="nav-link" onClick={handleShowLoginModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       로그인
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="nav-link"
-                      onClick={() => {
-                        setShowLoginModal(false);
-                        setShowSignupModal(true);
-                      }}
-                    >
+                    <Link className="nav-link" onClick={handleShowSignupModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       회원가입
                     </Link>
@@ -233,15 +217,13 @@ const Header = () => {
           {!searchVisible && (
             <button
               className="btn btn-ghost btn-circle"
-              onClick={handleButtonClick}
-            >
+              onClick={handleButtonClick}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`h-5 w-5`}
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -270,8 +252,7 @@ const Header = () => {
                 className="h-5 w-5"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -289,7 +270,10 @@ const Header = () => {
         showModal={showSignupModal}
         setShowModal={setShowSignupModal}
       />
-      <ModifyModal showModal={showModifyModal} setShowModal={setShowModifyModal} />
+      <ModifyModal
+        showModal={showModifyModal}
+        setShowModal={setShowModifyModal}
+      />
     </>
   );
 };

@@ -161,3 +161,8 @@
     display: flex;
     gap: 10px; /* 버튼 사이의 간격 */
   }
+
+  .replyTime {
+    color: gray;
+    font-size: 0.8em;
+  }

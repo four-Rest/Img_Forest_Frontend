@@ -17,16 +17,17 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [detail, setDetail] = useState(null);
   const [comment, setComment] = useState("");
   const [reply, setReply] = useState(""); // 대댓글 내용
-  const [replyCommentId, setReplyCommentId] = useState(null); // 대댓글 작성할 댓글의 commentId 추가
+  const [commentId, setCommentId] = useState(null); // 대댓글 작성할 댓글의 commentId 추가
 
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
   const [editingCommentId, setEditingCommentId] = useState(null); // 현재 수정 중인 댓글 ID
   const [editingContent, setEditingContent] = useState(""); // 수정 중인 댓글 내용
 
-  const [isReplyEditing, setIsReplyEditing] = useState(false); // 수정 모드 상태
+  const [isReplyEditing, setIsReplyEditing] = useState(false); // 대댓글 수정 모드 상태
   const [editingReplyId, setEditingReplyId] = useState(null); // 현재 대댓글 수정 중인 댓글 ID
   const [replyEditingContent, setReplyEditingContent] = useState(""); // 수정 중인 대댓글 내용
-  const [isReplyButtonClicked, setIsReplyButtonClicked] = useState(false); // 새로운 상태 변수 추가
+
+  const [isReplyButtonClicked, setIsReplyButtonClicked] = useState(false); // 대댓글 버튼 클릭 여부 상태
 
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const navigate = useNavigate();
@@ -314,7 +315,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 // 대댓글 작성
   const handleReplySubmit = async (commentId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/comment/${replyCommentId}/reply`, {
+      const response = await fetch(`${apiUrl}/api/comment/${commentId}/reply`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -349,8 +350,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
             listCommentResponses: updatedComments,
           };
         });
-        // 대댓글 입력 상태 초기화
-        setReply("");
+        setReply(""); // 대댓글 입력 상태 초기화
       } else {
         console.error("대댓글 생성 실패");
         // 실패 시 사용자에게 알림
@@ -460,12 +460,20 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     }
   };
 
-// 대댓글 버튼을 클릭할 때 호출되는 함수
+  // 대댓글 버튼 클릭 시 호출되는 함수
   const handleReplyButtonClick = (commentId) => {
-    setIsReplyButtonClicked(true); // 대댓글 버튼이 클릭되었음을 표시
-    setIsReplyEditing(true); // 대댓글 입력 모드 활성화
-    setReplyCommentId(commentId); // 대댓글을 작성할 댓글의 commentId 설정
-    setIsEditing(false); // 댓글 수정 모드 비활성화
+    setIsReplyButtonClicked(true); // 대댓글 버튼 클릭 상태로 변경
+    setIsEditing(false); // 수정 모드 비활성화
+    setIsReplyEditing(true); // 대댓글 작성 모드 활성화
+    setCommentId(commentId); // 대댓글 작성할 댓글의 commentId 설정
+  };
+
+  // 대댓글 작성 후 전송 버튼 클릭 시 호출되는 함수
+  const handleReplySendClick = () => {
+    handleReplySubmit(commentId); // 대댓글 작성 로직 호출
+    setIsReplyButtonClicked(false); // 대댓글 버튼 클릭 상태 초기화
+    setIsReplyEditing(false); // 대댓글 작성 모드 비활성화
+    setReply(""); // 대댓글 입력 상태 초기화
   };
 
   return (
@@ -587,7 +595,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                                         <button onClick={() => handleDeleteReply(comment.id, reply.id)}>
                                           삭제
                                         </button>
-                                        <button onClick={() => handleEditReply(comment.id, reply.id, reply.content)}>
+                                        <button onClick={() => handleSaveEditReply(comment.id, reply.id, reply.content)}>
                                           수정
                                         </button>
                                       </div>
@@ -610,52 +618,58 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                   alignItems: "center",
                 }}
             >
-              <input
-                  type="text"
-                  value={
-                    isEditing
-                        ? editingContent
-                        : isReplyButtonClicked
-                            ? reply
-                            : comment
-                  }
-                  onChange={(e) =>
-                      isEditing
-                          ? setEditingContent(e.target.value)
-                          : isReplyButtonClicked
-                              ? setReply(e.target.value)
+              {/* 댓글 입력 필드 */}
+              {!isReplyButtonClicked && (
+                  <input
+                      type="text"
+                      value={isEditing ? editingContent : comment}
+                      onChange={(e) =>
+                          isEditing
+                              ? setEditingContent(e.target.value)
                               : setComment(e.target.value)
-                  }
-                  placeholder={
-                    isEditing
-                        ? "댓글 수정..."
-                        : isReplyButtonClicked
-                            ? "대댓글을 입력하세요..."
-                            : "댓글을 입력하세요..."
-                  }
-                  style={{
-                    flex: 1,
-                    padding: "10px",
-                    border: "none",
-                    borderRadius: "5px",
-                    background: "#e9ecef",
-                    marginRight: "10px", // 버튼과의 간격 조정
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault(); // 엔터 키로 인한 폼 제출 동작을 방지
-                      if (isEditing) {
-                        handleSaveEdit();
-                      } else if (isReplyButtonClicked) {
-                        handleReplySubmit();
-                      } else {
-                        handleCommentSubmit();
                       }
-                    }
-                  }}
-              />
+                      placeholder={isEditing ? "댓글 수정..." : "댓글을 입력하세요..."}
+                      style={{
+                        flex: 1,
+                        padding: "10px",
+                        border: "none",
+                        borderRadius: "5px",
+                        background: "#e9ecef",
+                        marginRight: "10px", // 버튼과의 간격 조정
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // 엔터 키로 인한 폼 제출 동작을 방지
+                          isEditing ? handleSaveEdit() : handleCommentSubmit();
+                        }
+                      }}
+                  />
+              )}
+              {/* 대댓글 입력 필드 */}
+              {isReplyButtonClicked && (
+                  <input
+                      type="text"
+                      value={reply}
+                      onChange={(e) => setReply(e.target.value)}
+                      placeholder="대댓글을 입력하세요..."
+                      style={{
+                        flex: 1,
+                        padding: "10px",
+                        border: "none",
+                        borderRadius: "5px",
+                        background: "#e9ecef",
+                        marginRight: "10px", // 버튼과의 간격 조정
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // 엔터 키로 인한 폼력 제출 동작을 방지
+                          handleReplySendClick();
+                        }
+                      }}
+                  />
+              )}
               {/* 댓글 작성 모드일 때 "전송" 버튼 표시 */}
-              {!isEditing && comment && (
+              {!isEditing && !isReplyButtonClicked && (
                   <button
                       onClick={handleCommentSubmit}
                       style={{
@@ -693,28 +707,9 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                   </button>
               )}
               {/* 대댓글 작성 모드일 때 "전송" 버튼 표시 */}
-              {!isReplyEditing && reply && (
+              {isReplyButtonClicked && (
                   <button
-                      onClick={handleReplySubmit}
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: "10px",
-                        border: "none",
-                        borderRadius: "5px",
-                        background: "#007bff",
-                        color: "white",
-                        cursor: "pointer",
-                      }}
-                  >
-                    <FontAwesomeIcon icon={faPaperPlane} />
-                  </button>
-              )}
-              {/* 대댓글 수정 모드일 때 "저장" 버튼 표시 */}
-              {isReplyEditing && (
-                  <button
-                      onClick={handleSaveEditReply}
+                      onClick={handleReplySendClick}
                       style={{
                         display: "flex",
                         justifyContent: "center",

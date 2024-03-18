@@ -17,6 +17,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [detail, setDetail] = useState(null);
   const [comment, setComment] = useState("");
   const [reply, setReply] = useState(""); // 대댓글 내용
+  const [replyCommentId, setReplyCommentId] = useState(null); // 대댓글 작성할 댓글의 commentId 추가
 
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
   const [editingCommentId, setEditingCommentId] = useState(null); // 현재 수정 중인 댓글 ID
@@ -313,7 +314,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 // 대댓글 작성
   const handleReplySubmit = async (commentId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/comment/${commentId}/reply`, {
+      const response = await fetch(`${apiUrl}/api/comment/${replyCommentId}/reply`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -405,16 +406,16 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     setReplyEditingContent(content); // 대댓글 내용 설정
   };
 
-  const handleSaveEditReply = async (commentId, replyId) => {
+  const handleSaveEditReply = async () => {
     try {
       const editedReply = {
-        commentId: commentId,
-        replyId: replyId,
+        commentId: editingCommentId,
+        replyId: editingReplyId,
         content: replyEditingContent,
       };
-
+      console.log(editedReply);
       const response = await fetch(
-          `${apiUrl}/api/comment/${commentId}/reply/${replyId}`,
+          `${apiUrl}/api/comment/${editingCommentId}/reply/${editingReplyId}`,
           {
             method: "PUT",
             credentials: "include",
@@ -435,10 +436,10 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       // 수정된 대댓글을 상태에 반영
       setDetail((prevDetail) => {
         const updatedComments = prevDetail.listCommentResponses.map((comment) => {
-          if (comment.id === commentId) {
+          if (comment.id === editingCommentId) {
             // 해당 댓글의 대댓글을 찾아서 수정된 내용을 반영
             const updatedReplies = comment.listReplies.map((reply) => {
-              if (reply.id === replyId) {
+              if (reply.id === editingReplyId) {
                 return { ...reply, content: updatedReply.data.content };
               }
               return reply;
@@ -460,9 +461,10 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   };
 
 // 대댓글 버튼을 클릭할 때 호출되는 함수
-  const handleReplyButtonClick = () => {
+  const handleReplyButtonClick = (commentId) => {
     setIsReplyButtonClicked(true); // 대댓글 버튼이 클릭되었음을 표시
     setIsReplyEditing(true); // 대댓글 입력 모드 활성화
+    setReplyCommentId(commentId); // 대댓글을 작성할 댓글의 commentId 설정
     setIsEditing(false); // 댓글 수정 모드 비활성화
   };
 
@@ -563,7 +565,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                                 <button onClick={() => handleEditComment(comment.id, comment.content)}>
                                   수정
                                 </button>
-                                <button onClick={handleReplyButtonClick}>
+                                <button onClick={() => handleReplyButtonClick(comment.id)}>
                                   대댓글
                                 </button>
                               </div>

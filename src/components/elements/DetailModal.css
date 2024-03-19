@@ -162,6 +162,23 @@
     gap: 10px; /* 버튼 사이의 간격 */
   }
 
+  .replyItem {
+    display: flex;
+    margin-left: 20px; /* 한 칸 들여쓰기 */
+  }
+
+  .replyContent {
+    flex: 1; /* 내용이 가능한 많은 공간을 차지하도록 설정 */
+  }
+
+  .replyButton {
+    margin-left: 10px; /* 대댓글 버튼을 오른쪽으로 10px 이동 */
+  }
+
+  .replyActions {
+    display: flex;
+    gap: 10px; /* 버튼 사이의 간격 */
+  }
   .replyTime {
     color: gray;
     font-size: 0.8em;

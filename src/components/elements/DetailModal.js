@@ -8,7 +8,6 @@ import {
   faComment,
   faTag,
   faPaperPlane,
-  comments,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { toastNotice } from "../ToastrConfig";
@@ -28,6 +27,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const [replyEditingContent, setReplyEditingContent] = useState(""); // 수정 중인 대댓글 내용
 
   const [isReplyButtonClicked, setIsReplyButtonClicked] = useState(false); // 대댓글 버튼 클릭 여부 상태
+  const [isReplyEditingButtonClicked, setIsReplyEditingButtonClicked] = useState(false); // 대댓글 수정 버튼 클릭 여부 상태
 
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const navigate = useNavigate();
@@ -315,6 +315,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 // 대댓글 작성
   const handleReplySubmit = async (commentId) => {
     try {
+      const name = localStorage.getItem("username");
       const response = await fetch(`${apiUrl}/api/comment/${commentId}/reply`, {
         method: "POST",
         credentials: "include",
@@ -322,14 +323,16 @@ function DetailModal({ showModal, setShowModal, articleId }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          username: name,
           content: reply,
         }),
       });
 
       if (response.ok) {
-        const newReplyData = await response.json(); // 새 대댓글 데이터
+        const newReplyData = await response.json();
         const newReply = {
           ...newReplyData.data,
+          username: name,
           removedTime: null,
         };
 
@@ -337,7 +340,6 @@ function DetailModal({ showModal, setShowModal, articleId }) {
         setDetail((prevDetail) => {
           const updatedComments = prevDetail.listCommentResponses.map((comment) => {
             if (comment.id === commentId) {
-              // 부모 댓글을 찾아서 대댓글 추가
               return {
                 ...comment,
                 listReplies: comment.listReplies ? [...comment.listReplies, newReply] : [newReply],
@@ -379,7 +381,6 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      // const deletedReply = await response.json();
       // 삭제된 대댓글을 UI에서 제거
       setDetail((prevDetail) => ({
         ...prevDetail,
@@ -397,13 +398,6 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     } catch (error) {
       console.error("Error deleting reply:", error);
     }
-  };
-
-  // 대댓글 수정 함수
-  const handleEditReply = (commentId, replyId, content) => {
-    setIsReplyEditing(true);  // 대댓글 수정 모드 활성화
-    setEditingReplyId(replyId); // 수정 중인 대댓글 ID 설정
-    setReplyEditingContent(content); // 대댓글 내용 설정
   };
 
   const handleSaveEditReply = async () => {
@@ -437,7 +431,6 @@ function DetailModal({ showModal, setShowModal, articleId }) {
       setDetail((prevDetail) => {
         const updatedComments = prevDetail.listCommentResponses.map((comment) => {
           if (comment.id === editingCommentId) {
-            // 해당 댓글의 대댓글을 찾아서 수정된 내용을 반영
             const updatedReplies = comment.listReplies.map((reply) => {
               if (reply.id === editingReplyId) {
                 return { ...reply, content: updatedReply.data.content };
@@ -450,8 +443,6 @@ function DetailModal({ showModal, setShowModal, articleId }) {
         });
         return { ...prevDetail, listCommentResponses: updatedComments };
       });
-
-      // 수정 모드 종료
       setIsReplyEditing(false);
       setEditingReplyId(null);
       setReplyEditingContent("");
@@ -464,7 +455,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const handleReplyButtonClick = (commentId) => {
     setIsReplyButtonClicked(true); // 대댓글 버튼 클릭 상태로 변경
     setIsEditing(false); // 수정 모드 비활성화
-    setIsReplyEditing(true); // 대댓글 작성 모드 활성화
+    setIsReplyEditing(false); // 대댓글 작성 모드 비활성화
     setCommentId(commentId); // 대댓글 작성할 댓글의 commentId 설정
   };
 
@@ -472,7 +463,27 @@ function DetailModal({ showModal, setShowModal, articleId }) {
   const handleReplySendClick = () => {
     handleReplySubmit(commentId); // 대댓글 작성 로직 호출
     setIsReplyButtonClicked(false); // 대댓글 버튼 클릭 상태 초기화
-    setIsReplyEditing(false); // 대댓글 작성 모드 비활성화
+    setReply(""); // 대댓글 입력 상태 초기화
+  };
+
+  // 대댓글 수정 버튼 클릭 시 호출되는 함수
+  const handleEditReplyButtonClick = (commentId, replyId) => {
+    setIsReplyEditingButtonClicked(true); // 대댓글 수정 버튼 클릭 상태로 변경
+    setIsReplyEditing(true);  // 대댓글 수정 모드 활성화
+    setEditingCommentId(commentId); // 수정 중인 댓글 ID 설정
+    setEditingReplyId(replyId); // 수정 중인 대댓글 ID 설정
+    const editedReply = detail.listCommentResponses
+        .find(comment => comment.id === commentId)
+        .listReplies.find(reply => reply.id === replyId);
+    setReplyEditingContent(editedReply.content);
+  };
+
+  // 대댓글 수정 후 전송 버튼 클릭 시 호출되는 함수
+  const handleEditReplySendClick = () => {
+    handleSaveEditReply();
+    setIsReplyEditing(false); // 대댓글 수정 모드 비활성화
+    setIsReplyEditingButtonClicked(false); // 대댓글 버튼 클릭 상태 초기화
+    setEditingReplyId(null); // 수정 중인 대댓글 ID 초기화
     setReply(""); // 대댓글 입력 상태 초기화
   };
 
@@ -562,8 +573,8 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                             <strong>{comment.username}</strong>: {comment.content}
                             <br />
                             <span className="commentTime">
-                      {calculateTimeAgo(comment.createdDate)}
-                    </span>
+            {calculateTimeAgo(comment.createdDate)}
+          </span>
                           </div>
                           {localStorage.getItem("username") === comment.username && (
                               <div className="commentActions">
@@ -573,37 +584,37 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                                 <button onClick={() => handleEditComment(comment.id, comment.content)}>
                                   수정
                                 </button>
-                                <button onClick={() => handleReplyButtonClick(comment.id)}>
-                                  대댓글
-                                </button>
                               </div>
                           )}
-                          {/* 대댓글 */}
-                          <ul>
-                            {comment.listReplies && comment.listReplies.map((reply, index) => (
-                                <li key={index} className="replyItem">
-                                  <div className="replyContent">
-                                    <strong>{reply.username}</strong>: {reply.content}
-                                    <br />
-                                    <span className="replyTime">
-                                    {calculateTimeAgo(reply.createdDate)}
-                                    </span>
-                                  </div>
-                                  {/* 대댓글 작성자만 삭제, 수정 버튼을 볼 수 있도록 */}
-                                  {localStorage.getItem("username") === reply.username && (
-                                      <div className="replyActions">
-                                        <button onClick={() => handleDeleteReply(comment.id, reply.id)}>
-                                          삭제
-                                        </button>
-                                        <button onClick={() => handleSaveEditReply(comment.id, reply.id, reply.content)}>
-                                          수정
-                                        </button>
-                                      </div>
-                                  )}
-                                </li>
-                            ))}
-                          </ul>
+                          <button className="replyButton" onClick={() => handleReplyButtonClick(comment.id)}>
+                            대댓글
+                          </button>
                         </li>
+                    ))}
+                {listCommentResponses
+                    .filter((comment) => comment.removedTime === null)
+                    .map((comment) => (
+                        comment.listReplies && comment.listReplies.map((reply, replyIndex) => (
+                            <li key={replyIndex} className="replyItem">
+                              <div className="replyContent">
+                                <strong>{reply.username}</strong>: {reply.content}
+                                <br />
+                                <span className="replyTime">
+                                  {calculateTimeAgo(reply.createdDate)}
+                                </span>
+                              </div>
+                              {localStorage.getItem("username") === reply.username && (
+                                  <div className="replyActions">
+                                    <button onClick={() => handleDeleteReply(comment.id, reply.id)}>
+                                      삭제
+                                    </button>
+                                    <button onClick={() => handleEditReplyButtonClick(comment.id, reply.id)}>
+                                      수정
+                                    </button>
+                                  </div>
+                              )}
+                            </li>
+                        ))
                     ))}
               </ul>
             </div>
@@ -619,7 +630,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                 }}
             >
               {/* 댓글 입력 필드 */}
-              {!isReplyButtonClicked && (
+              {!isReplyButtonClicked && !isReplyEditingButtonClicked && (
                   <input
                       type="text"
                       value={isEditing ? editingContent : comment}
@@ -646,7 +657,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                   />
               )}
               {/* 대댓글 입력 필드 */}
-              {isReplyButtonClicked && (
+              {isReplyButtonClicked && !isReplyEditing && (
                   <input
                       type="text"
                       value={reply}
@@ -662,14 +673,38 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                       }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          e.preventDefault(); // 엔터 키로 인한 폼력 제출 동작을 방지
-                          handleReplySendClick();
+                          e.preventDefault(); // 엔터 키로 인한 폼 제출 동작을 방지
+                          handleReplySubmit();
                         }
                       }}
                   />
               )}
+              {/* 대댓글 수정 필드 */}
+              {isReplyEditingButtonClicked && isReplyEditing && (
+                  <input
+                      type="text"
+                      value={replyEditingContent}
+                      onChange={(e) => setReplyEditingContent(e.target.value)}
+                      placeholder="대댓글 수정..."
+                      style={{
+                        flex: 1,
+                        padding: "10px",
+                        border: "none",
+                        borderRadius: "5px",
+                        background: "#e9ecef",
+                        marginRight: "10px", // 버튼과의 간격 조정
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // 엔터 키로 인한 폼 제출 동작을 방지
+                          handleSaveEditReply();
+                        }
+                      }}
+                  />
+              )}
+
               {/* 댓글 작성 모드일 때 "전송" 버튼 표시 */}
-              {!isEditing && !isReplyButtonClicked && (
+              {!isEditing && !isReplyButtonClicked && !isReplyEditingButtonClicked && (
                   <button
                       onClick={handleCommentSubmit}
                       style={{
@@ -710,6 +745,25 @@ function DetailModal({ showModal, setShowModal, articleId }) {
               {isReplyButtonClicked && (
                   <button
                       onClick={handleReplySendClick}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "10px",
+                        border: "none",
+                        borderRadius: "5px",
+                        background: "#007bff",
+                        color: "white",
+                        cursor: "pointer",
+                      }}
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                  </button>
+              )}
+              {/* 대댓글 수정 모드일 때 "전송" 버튼 표시 */}
+              {isReplyEditingButtonClicked && isReplyEditing && (
+                  <button
+                      onClick={handleEditReplySendClick}
                       style={{
                         display: "flex",
                         justifyContent: "center",

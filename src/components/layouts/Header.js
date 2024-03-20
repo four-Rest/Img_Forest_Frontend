@@ -291,15 +291,16 @@ const Header = () => {
                 </button>
                 {/* </div> */}
                 {/* 24.03.14 메모. img 크기 고정 필요성 고민*/}
+                {/* 24.03.14 메모. img 주소 백엔드에서 임의 string으로 변환하는 게 좋을듯 */}
                 {/* 24.03.14 메모. Link 누르면 클릭 배경색 고정되는 것(로그인 모달도 동일)*/}
                 <ul
                   tabIndex={0}
                   className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80">
-                  {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성 */}
+                  {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성해야 할듯 */}
                   <li>
                     <Link to={`/`}>
                       <p>👍 {"user1"}님이 좋아합니다.</p>
-                      <img src="https://api.img.for-rest.site/gen/2024/02/16/8a79a2ad-f784-4fd9-8224-7d20979ab2aa_%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%A5%E1%84%83%E1%85%A5%E1%87%81%E1%84%87%E1%85%A1%E1%86%B8.jpeg" />
+                      <img src="https://www.allrecipes.com/thmb/eKu_vXTbZJMdFsd5JdbY7kvDy80=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/79543-fried-rice-restaurant-style-DDMFS-4x3-b79a6ea27e0344399257ca1df67ca1cd.jpg" />
                     </Link>
                   </li>
                   <li>
@@ -308,7 +309,7 @@ const Header = () => {
                         <p>💬 {"user2"}님이 댓글을 남겼습니다.</p>
                         <p>{'"맨유 화이팅"'}</p>
                       </div>
-                      <img src="https://api.img.for-rest.site/gen/2024/02/15/b3b6bfc6-e991-44e1-92da-28a3442dc571_GSqw_BIlGyvXvU0FmljNnmaLUlBbHkwtYed-WTUvHryz9TMbsB1YtTYGCvJ09Xy-8kAl_iLR00GeAe7PHjWyzVzAvrQBsslpvUGU63H97099GwSISLUXNhliW11BMXc97dacZyLqCVoVWMEssNPrjw.webp" />
+                      <img src="https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F08%2Fadidas-signs-premier-league-record-1-15-billion-manchester-united-sponsorship-with-increased-focus-on-womens-team-info-01.jpg?cbr=1&q=90" />
                     </Link>
                   </li>
                 </ul>

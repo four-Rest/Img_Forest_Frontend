@@ -10,8 +10,12 @@ const SignupModal = ({ showModal, setShowModal }) => {
   const [password2, setPassword2] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
-  const [code, setCode] = useState(""); // 인증코드 변수명 지정 필요 // 인증코드 길이 지정 필요
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+
+  /* 24.03.13 메모. 인증코드 변수명, 길이 지정 필요 */
+  const [code, setCode] = useState("");
+  const [validCode, setValidCode] = useState("");
+  const [isSend, setIsSend] = useState(false);
 
   const signupData = {
     username,
@@ -70,16 +74,21 @@ const SignupModal = ({ showModal, setShowModal }) => {
   }
 
   function onSendCode() {
+    /* random string을 생성*/
+    setValidCode("123&abc");
     /* code를 보내는 로직 */
+    /* 24.03.14 메모. crypto 사용? */
 
     alert("이메일로 인증코드가 전송되었습니다.");
+    setIsSend(true);
   }
 
   function onEmailCheck() {
     // console.log(code);
-    /*  */
+
     /* 입력한 code와 전송한 code가 일치하는지 확인 */
-    /* 입력code와 전송code의 변수를 다르게 해야할지도*/
+    if (code == validCode) toastNotice("일치합니다.");
+    else toastWarning("틀렸습니다.");
     /* 일치하면 bool 변수로 회원가입 가능한 상태로 */
   }
 
@@ -161,18 +170,26 @@ const SignupModal = ({ showModal, setShowModal }) => {
                     인증코드 발송
                   </button>
                 </div>
-                <div className="verify-email">
-                  <input
-                    type="text"
-                    placeholder="인증코드 입력"
-                    className="input input-bordered w-full "
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                  />
-                  <button type="button" className="btn" onClick={onEmailCheck}>
-                    인증하기
-                  </button>
-                </div>
+                <p></p>
+                {isSend ? (
+                  <div className="verify-email">
+                    <input
+                      type="text"
+                      placeholder="인증코드 입력"
+                      className="input input-bordered w-full "
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={onEmailCheck}>
+                      인증하기
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
               <div className="form-control w-full mb-4 flex flex-col items-center">
                 <label className="label w-full max-w-md">

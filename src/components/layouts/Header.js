@@ -25,6 +25,10 @@ const Header = () => {
   const [searchTag, setSearchTag] = useState("");
   const { updateSearchTag } = useContext(SearchTagContext);
 
+  /* 24.03.14 메모. news 기본값은 data fetch로 설정? */
+  const testNewsValue = true; /* 24.03.14 메모. 테스트 임시 변수 */
+  const [news, setNews] = useState(testNewsValue);
+
   const [userNick, setUserNick] = useState("");
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
@@ -68,6 +72,12 @@ const Header = () => {
       updateSearchTag({ tag: searchTag });
       navigate(`/article/${searchTag}`);
     }
+  };
+
+  const showNotification = () => {
+    console.log("showNotification");
+    setNews(false);
+    /* 24.03.14 메모. news 값을 계정별로 저장하는 방법? */
   };
 
   useEffect(() => {
@@ -131,21 +141,18 @@ const Header = () => {
           height: "40px",
           width: "100%",
           zIndex: 9999,
-        }}
-      >
+        }}>
         <div className="navbar-start">
           <div className="dropdown">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle"
-            >
+              className="btn btn-ghost btn-circle">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -156,26 +163,25 @@ const Header = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
               {isLogin ? (
                 <>
                   <li>
-                    <Link 
+                    <Link
                       className="nav-link"
                       onClick={() => {
                         setShowSignupModal(false);
                         setShowLoginModal(false);
                         setShowModifyModal(true);
-                        }
-                      }>
+                      }}>
                       <FontAwesomeIcon icon={faAddressCard} /> 내 정보 수정
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to={`/myarticle/${storedNick !== null ? storedNick : ""}`}
-                    >
+                      to={`/myarticle/${
+                        storedNick !== null ? storedNick : ""
+                      }`}>
                       <FontAwesomeIcon icon={faRectangleList} /> 내 글 보기
                     </Link>
                   </li>
@@ -194,25 +200,13 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link
-                      className="nav-link"
-                      onClick={() => {
-                        setShowSignupModal(false);
-                        setShowLoginModal(true);
-                      }}
-                    >
+                    <Link className="nav-link" onClick={handleShowLoginModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       로그인
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      className="nav-link"
-                      onClick={() => {
-                        setShowLoginModal(false);
-                        setShowSignupModal(true);
-                      }}
-                    >
+                    <Link className="nav-link" onClick={handleShowSignupModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       회원가입
                     </Link>
@@ -233,15 +227,13 @@ const Header = () => {
           {!searchVisible && (
             <button
               className="btn btn-ghost btn-circle"
-              onClick={handleButtonClick}
-            >
+              onClick={handleButtonClick}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`h-5 w-5`}
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -263,25 +255,67 @@ const Header = () => {
               />
             </div>
           )}
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item"></span>
-            </div>
-          </button>
+          {/* 24.03.14 메모. 알림 버튼은 추후 isLogin을 해야지만 보이도록 설정. 
+           현재 개발단계로 isLogin이 false 일 때 보이게 함.*/}
+          {/* 24.03.14 메모. open or close를 위한
+          Dropdown menu using <details> tag 선택지는 잠시 보류 */}
+          {isLogin ? (
+            ""
+          ) : (
+            <>
+              <div className="dropdown dropdown-bottom dropdown-end">
+                {/* <div tabIndex={0} role="button"> */}
+                <button
+                  className="btn btn-ghost btn-circle"
+                  onClick={showNotification}>
+                  <div className="indicator">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      />
+                    </svg>
+                    {news ? (
+                      <span className="badge badge-xs badge-primary indicator-item"></span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </button>
+                {/* </div> */}
+                {/* 24.03.14 메모. img 크기 고정 필요성 고민*/}
+                {/* 24.03.14 메모. img 주소 백엔드에서 임의 string으로 변환하는 게 좋을듯 */}
+                {/* 24.03.14 메모. Link 누르면 클릭 배경색 고정되는 것(로그인 모달도 동일)*/}
+                <ul
+                  tabIndex={0}
+                  className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80">
+                  {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성해야 할듯 */}
+                  <li>
+                    <Link to={`/`}>
+                      <p>👍 {"user1"}님이 좋아합니다.</p>
+                      <img src="https://www.allrecipes.com/thmb/eKu_vXTbZJMdFsd5JdbY7kvDy80=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/79543-fried-rice-restaurant-style-DDMFS-4x3-b79a6ea27e0344399257ca1df67ca1cd.jpg" />
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/`}>
+                      <div>
+                        <p>💬 {"user2"}님이 댓글을 남겼습니다.</p>
+                        <p>{'"맨유 화이팅"'}</p>
+                      </div>
+                      <img src="https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F08%2Fadidas-signs-premier-league-record-1-15-billion-manchester-united-sponsorship-with-increased-focus-on-womens-team-info-01.jpg?cbr=1&q=90" />
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />
@@ -289,7 +323,10 @@ const Header = () => {
         showModal={showSignupModal}
         setShowModal={setShowSignupModal}
       />
-      <ModifyModal showModal={showModifyModal} setShowModal={setShowModifyModal} />
+      <ModifyModal
+        showModal={showModifyModal}
+        setShowModal={setShowModifyModal}
+      />
     </>
   );
 };

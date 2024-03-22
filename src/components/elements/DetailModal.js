@@ -568,28 +568,58 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                 {listCommentResponses
                     .filter((comment) => comment.removedTime === null)
                     .map((comment, index) => (
-                        <li key={index} className="commentItem">
-                          <div className="commentContent">
-                            <strong>{comment.username}</strong>: {comment.content}
-                            <br />
-                            <span className="commentTime">
+                        <>
+                          <li key={index} className="commentItem">
+                            <div className="commentContent">
+                              <strong>{comment.username}</strong>: {comment.content}
+                              <br />
+                              <span className="commentTime">
             {calculateTimeAgo(comment.createdDate)}
           </span>
-                          </div>
-                          {localStorage.getItem("username") === comment.username && (
-                              <div className="commentActions">
-                                <button onClick={() => handleDeleteComment(comment.id)}>
-                                  삭제
-                                </button>
-                                <button onClick={() => handleEditComment(comment.id, comment.content)}>
-                                  수정
-                                </button>
-                              </div>
-                          )}
-                          <button className="replyButton" onClick={() => handleReplyButtonClick(comment.id)}>
-                            대댓글
-                          </button>
-                        </li>
+                            </div>
+                            {localStorage.getItem("username") === comment.username && (
+                                <div className="commentActions">
+                                  <button onClick={() => handleDeleteComment(comment.id)}>
+                                    삭제
+                                  </button>
+                                  <button onClick={() => handleEditComment(comment.id, comment.content)}>
+                                    수정
+                                  </button>
+                                </div>
+                            )}
+                            <button className="replyButton" onClick={() => handleReplyButtonClick(comment.id)}>
+                              대댓글
+                            </button>
+                          </li>
+                          {
+                            comment.childComments
+                                ?
+                                comment.childComments.map((o, k) => (
+                                    <li key={k} className="replyItem">
+                                      <div className="replyContent">
+                                        <strong>{o.username}</strong>: {o.content}
+                                        <br />
+                                        <span className="replyTime">
+                                    {calculateTimeAgo(o.createdDate)}
+                                  </span>
+                                      </div>
+                                      {localStorage.getItem("username") === o.username && (
+                                          <div className="replyActions">
+                                            <button onClick={() => handleDeleteReply(o.id, reply.id)}>
+                                              삭제
+                                            </button>
+                                            <button onClick={() => handleEditReplyButtonClick(o.id, reply.id)}>
+                                              수정
+                                            </button>
+                                          </div>
+                                      )}
+                                    </li>
+                                ))
+                                :
+                                <>
+                                </>
+                          }
+                        </>
                     ))}
                 {listCommentResponses
                     .filter((comment) => comment.removedTime === null)

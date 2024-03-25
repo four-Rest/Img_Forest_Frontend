@@ -52,11 +52,17 @@ jobs:
           echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          ${{ secrets.DOT_ENV }}
+          EOF
+        shell: bash
       - name: 빌드 앤 푸시
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/imgforest-client:${{ needs.makeTagAndRelease.outputs.tag_name }},
-            ghcr.io/${{ env.OWNER_LC }}/imgforest-client:latest
+            ghcr.io/${{ env.OWNER_LC }}/imgforest-client-app:${{ needs.makeTagAndRelease.outputs.tag_name }},
+            ghcr.io/${{ env.OWNER_LC }}/imgforest-client-app:latest

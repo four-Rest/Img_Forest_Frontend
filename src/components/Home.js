@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './styles.css'; 
+import React, { useState, useEffect, useRef } from "react";
+import "../styles/styles.css";
 
-function Home() { 
-  
+function Home() {
   const [articleData, setArticleData] = useState([]); // 이미지 데이터 배열
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [startIndex, setStartIndex] = useState(0); // 표시할 이미지의 시작 인덱스
@@ -18,11 +17,10 @@ function Home() {
       try {
         const res = await fetch(`/api/article`); // API에서 이미지 데이터를 가져옴
         const data = await res.json(); // 응답 데이터를 JSON 형식으로 변환
-        setArticleData(prevData => prevData.concat(data.data)); // 기존 이미지 데이터에 새로운 데이터를 추가
-        console.log('데이터 개수:', data.data.length); // 데이터 개수를 콘솔에 출력
-
+        setArticleData((prevData) => prevData.concat(data.data)); // 기존 이미지 데이터에 새로운 데이터를 추가
+        console.log("데이터 개수:", data.data.length); // 데이터 개수를 콘솔에 출력
       } catch (error) {
-        console.error('Error fetching article data:', error); // 오류가 발생하면 콘솔에 오류 메시지 출력
+        console.error("Error fetching article data:", error); // 오류가 발생하면 콘솔에 오류 메시지 출력
       }
       setLoading(false); // 로딩 상태를 false로 설정
     };
@@ -32,16 +30,25 @@ function Home() {
   useEffect(() => {
     // useEffect를 사용하여 target 요소의 가시성을 감시하고 스크롤 시 추가 데이터 로드
     const observer = new IntersectionObserver(
-      async(entries) => {
-        if (entries[0].isIntersecting && !loading) { // target 요소가 화면에 나타났고 로딩 중이 아닌 경우
+      async (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          // target 요소가 화면에 나타났고 로딩 중이 아닌 경우
           setLoading(true); // 로딩 상태를 true로 설정
-          setEndIndex(prevEndIndex => Math.max(prevEndIndex + 10, Math.min(prevEndIndex + 10, articleData.length))); // endIndex를 업데이트하여 추가 이미지를 표시
+          setEndIndex((prevEndIndex) =>
+            Math.max(
+              prevEndIndex + 10,
+              Math.min(prevEndIndex + 10, articleData.length)
+            )
+          ); // endIndex를 업데이트하여 추가 이미지를 표시
           //setEndIndex(prevEndIndex => Math.min(prevEndIndex + 10, articleData.length));
-          // 현재 ArticleData.length=45, 어떨때는 40개 렌더링 어떨때는 50개 렌더링 
+          // 현재 ArticleData.length=45, 어떨때는 40개 렌더링 어떨때는 50개 렌더링
         }
-      }, { threshold: 0 }); // IntersectionObserver 옵션 설정
+      },
+      { threshold: 0 }
+    ); // IntersectionObserver 옵션 설정
 
-    if (!loading && target.current) { // 로딩 중이 아니고 target이 현재 존재하는 경우
+    if (!loading && target.current) {
+      // 로딩 중이 아니고 target이 현재 존재하는 경우
       observer.observe(target.current); // IntersectionObserver를 target에 등록하여 가시성 감시
     }
 
@@ -59,7 +66,7 @@ function Home() {
           <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" />
         </div>
       ))}
-      <div ref={target}></div> 
+      <div ref={target}></div>
     </div>
   );
 }

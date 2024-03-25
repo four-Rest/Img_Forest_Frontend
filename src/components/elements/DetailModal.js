@@ -473,8 +473,10 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     setEditingCommentId(commentId); // 수정 중인 댓글 ID 설정
     setEditingReplyId(replyId); // 수정 중인 대댓글 ID 설정
     const editedReply = detail.listCommentResponses
-        .find(comment => comment.id === commentId)
-        .listReplies.find(reply => reply.id === replyId);
+        .flatMap((o, k) => {
+          return o.childComments.find((comment) => comment.id === commentId);
+        })
+        .filter(Boolean);
     setReplyEditingContent(editedReply.content);
   };
 
@@ -492,7 +494,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
           className="detailModalBackdrop"
           style={{ display: showModal ? "flex" : "none" }}
       >
-        <div className="detailModalContent">
+        <div className="detailModalContent" style={{ overflowY: 'auto', maxHeight: '80vh' }}>
           <label
               htmlFor="login-modal"
               className="btn btn-sm btn-circle absolute right-2 top-2"

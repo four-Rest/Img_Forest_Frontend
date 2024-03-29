@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { toastNotice } from "../ToastrConfig";
 
 function DetailModal({ showModal, setShowModal, articleId }) {
-  const [detail, setDetail] = useState(null);
+  const [detail, setDetail] = useState(null); 
   const [comment, setComment] = useState("");
   const [reply, setReply] = useState(""); // 대댓글 내용
   const [commentId, setCommentId] = useState(null); // 대댓글 작성할 댓글의 commentId 추가
@@ -31,6 +31,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
 
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const navigate = useNavigate();
+
 
   useEffect(() => {
     if (!articleId) return;
@@ -263,7 +264,12 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     document.body.removeChild(link); // DOM에서 링크 제거
   };
 
+
   const handleDownload = () => {
+    if(paid) {
+      toastNotice('유료 게시물은 결제가 필요합니다.');
+      return;
+    }
     const imagePath = `${apiUrl}/gen/${imgFilePath}/${imgFileName}`;
     downloadImage(imagePath, imgFileName);
   };
@@ -327,7 +333,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
           content: reply,
         }),
       });
-
+     
       if (response.ok) {
         const newReplyData = await response.json();
         const newReply = {
@@ -353,6 +359,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
           };
         });
         setReply(""); // 대댓글 입력 상태 초기화
+        console.log(listCommentResponses);
       } else {
         console.error("대댓글 생성 실패");
         // 실패 시 사용자에게 알림
@@ -473,8 +480,11 @@ function DetailModal({ showModal, setShowModal, articleId }) {
     setEditingCommentId(commentId); // 수정 중인 댓글 ID 설정
     setEditingReplyId(replyId); // 수정 중인 대댓글 ID 설정
     const editedReply = detail.listCommentResponses
-        .find(comment => comment.id === commentId)
-        .listReplies.find(reply => reply.id === replyId);
+        .flatMap((o, k) => {
+          return o.childComments.find((comment) => comment.id === commentId);
+        })
+        .filter(Boolean);
+        
     setReplyEditingContent(editedReply.content);
   };
 
@@ -492,7 +502,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
           className="detailModalBackdrop"
           style={{ display: showModal ? "flex" : "none" }}
       >
-        <div className="detailModalContent">
+        <div className="detailModalContent" style={{ overflowY: 'auto', maxHeight: '80vh' }}>
           <label
               htmlFor="login-modal"
               className="btn btn-sm btn-circle absolute right-2 top-2"
@@ -524,7 +534,7 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                     {price}원
                   </p>
               )}
-              <button onClick={handleDownload} className="downloadBtn">
+              <button onClick={handleDownload} className="downloadBtn" disabled={paid}>
                 저장
               </button>
               {localStorage.getItem("username") === username && (
@@ -568,58 +578,28 @@ function DetailModal({ showModal, setShowModal, articleId }) {
                 {listCommentResponses
                     .filter((comment) => comment.removedTime === null)
                     .map((comment, index) => (
-                        <>
-                          <li key={index} className="commentItem">
-                            <div className="commentContent">
-                              <strong>{comment.username}</strong>: {comment.content}
-                              <br />
-                              <span className="commentTime">
+                        <li key={index} className="commentItem">
+                          <div className="commentContent">
+                            <strong>{comment.username}</strong>: {comment.content}
+                            <br />
+                            <span className="commentTime">
             {calculateTimeAgo(comment.createdDate)}
           </span>
-                            </div>
-                            {localStorage.getItem("username") === comment.username && (
-                                <div className="commentActions">
-                                  <button onClick={() => handleDeleteComment(comment.id)}>
-                                    삭제
-                                  </button>
-                                  <button onClick={() => handleEditComment(comment.id, comment.content)}>
-                                    수정
-                                  </button>
-                                </div>
-                            )}
-                            <button className="replyButton" onClick={() => handleReplyButtonClick(comment.id)}>
-                              대댓글
-                            </button>
-                          </li>
-                          {
-                            comment.childComments
-                                ?
-                                comment.childComments.map((o, k) => (
-                                    <li key={k} className="replyItem">
-                                      <div className="replyContent">
-                                        <strong>{o.username}</strong>: {o.content}
-                                        <br />
-                                        <span className="replyTime">
-                                    {calculateTimeAgo(o.createdDate)}
-                                  </span>
-                                      </div>
-                                      {localStorage.getItem("username") === o.username && (
-                                          <div className="replyActions">
-                                            <button onClick={() => handleDeleteReply(o.id, reply.id)}>
-                                              삭제
-                                            </button>
-                                            <button onClick={() => handleEditReplyButtonClick(o.id, reply.id)}>
-                                              수정
-                                            </button>
-                                          </div>
-                                      )}
-                                    </li>
-                                ))
-                                :
-                                <>
-                                </>
-                          }
-                        </>
+                          </div>
+                          {localStorage.getItem("username") === comment.username && (
+                              <div className="commentActions">
+                                <button onClick={() => handleDeleteComment(comment.id)}>
+                                  삭제
+                                </button>
+                                <button onClick={() => handleEditComment(comment.id, comment.content)}>
+                                  수정
+                                </button>
+                              </div>
+                          )}
+                          <button className="replyButton" onClick={() => handleReplyButtonClick(comment.id)}>
+                            대댓글
+                          </button>
+                        </li>
                     ))}
                 {listCommentResponses
                     .filter((comment) => comment.removedTime === null)

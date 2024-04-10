@@ -118,67 +118,45 @@
   color: #333; / 글자 색상 /
   font-size: 1rem; / 글자 크기 /
   margin-bottom: 10px; / 아래쪽 여백 */
-  }
+}
 
-  .heart {
-    display: inline-block; /* 태그를 인라인 블록 요소로 만듦 */
-    padding: 5px 10px; /* 내부 여백 */
-    border-radius: 15px; /* 둥근 모서리 */
-    font-size: 0.875rem; /* 글자 크기 */
-    color: red; /* 글자색을 빨간색으로 변경 */
-    border: 1px solid red; /* 테두리 색상을 빨간색으로 설정 */
-    cursor: pointer;
-  }
-  
-  .canHeart {
-    display: inline-block; /* 동일한 스타일 적용 */
-    padding: 5px 10px; /* 동일한 내부 여백 */
-    border-radius: 15px; /* 동일한 둥근 모서리 */
-    font-size: 0.875rem; /* 동일한 글자 크기 */
-    color: grey; /* 글자색을 회색으로 변경 */
-    border: 1px solid grey; /* 테두리 색상을 회색으로 설정 */
-    cursor: pointer;
-  }
-  
-  .commentTime {
-    color: gray;
-    font-size: 0.8em;
-  }
+.heart {
+  display: inline-block; /* 태그를 인라인 블록 요소로 만듦 */
+  padding: 5px 10px; /* 내부 여백 */
+  border-radius: 15px; /* 둥근 모서리 */
+  font-size: 0.875rem; /* 글자 크기 */
+  color: red; /* 글자색을 빨간색으로 변경 */
+  border: 1px solid red; /* 테두리 색상을 빨간색으로 설정 */
+  cursor: pointer;
+}
 
-  .commentItem {
-    display: flex;
-    justify-content: space-between; /* 내용과 버튼 사이의 공간을 균등하게 배분 */
-    align-items: center; /* 세로 축 중앙 정렬 */
-    margin-bottom: 10px; /* 댓글 항목 사이의 간격 */
-  }
-  
-  .commentContent {
-    flex: 1; /* 내용이 가능한 많은 공간을 차지하도록 설정 */
-  }
-  
-  .commentActions {
-    display: flex;
-    gap: 10px; /* 버튼 사이의 간격 */
-  }
+.canHeart {
+  display: inline-block; /* 동일한 스타일 적용 */
+  padding: 5px 10px; /* 동일한 내부 여백 */
+  border-radius: 15px; /* 동일한 둥근 모서리 */
+  font-size: 0.875rem; /* 동일한 글자 크기 */
+  color: grey; /* 글자색을 회색으로 변경 */
+  border: 1px solid grey; /* 테두리 색상을 회색으로 설정 */
+  cursor: pointer;
+}
 
-  .replyItem {
-    display: flex;
-    margin-left: 20px; /* 한 칸 들여쓰기 */
-  }
+.commentTime {
+  color: gray;
+  font-size: 0.8em;
+}
 
-  .replyContent {
-    flex: 1; /* 내용이 가능한 많은 공간을 차지하도록 설정 */
-  }
+.commentItem {
+  display: flex;
+  justify-content: space-between; /* 내용과 버튼 사이의 공간을 균등하게 배분 */
+  align-items: center; /* 세로 축 중앙 정렬 */
+  margin-bottom: 10px; /* 댓글 항목 사이의 간격 */
+}
 
-  .replyButton {
-    margin-left: 10px; /* 대댓글 버튼을 오른쪽으로 10px 이동 */
-  }
+.commentContent {
+  flex: 1; /* 내용이 가능한 많은 공간을 차지하도록 설정 */
+}
 
-  .replyActions {
-    display: flex;
-    gap: 10px; /* 버튼 사이의 간격 */
-  }
-  .replyTime {
-    color: gray;
-    font-size: 0.8em;
-  }
+.commentActions {
+  display: flex;
+  gap: 10px; /* 버튼 사이의 간격 */
+}

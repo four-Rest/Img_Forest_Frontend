@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./styles.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import { IdDetailContext } from "../../api/IdDetailContext";
-import DetailModal from "../elements/DetailModal";
-import { useAuth } from "../../api/AuthContext";
+import { IdDetailContext } from "../../../api/IdDetailContext";
+import DetailModal from "../../elements/DetailModal";
+import { useAuth } from "../../../api/AuthContext";
 //import DetailModal
 
 function HomePaging() {

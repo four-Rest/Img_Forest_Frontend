@@ -8,31 +8,24 @@ import {
   faRectangleList
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../App.css";
-import { useAuth } from "../../delete/AuthContext";
-import { SearchTagContext } from "../../delete/SearchTagContext";
-import LoginModal from "../modal/LoginModal";
-import ModifyModal from "../modal/ModifyModal";
-import SignupModal from "../modal/SignupModal";
 import { toastNotice } from "../toastr/ToastrConfig";
 
 const Header = () => {
   const [searchTag, setSearchTag] = useState("");
-  const { updateSearchTag } = useContext(SearchTagContext);
 
   /* 24.03.14 메모. news 기본값은 data fetch로 설정? */
   const testNewsValue = true; /* 24.03.14 메모. 테스트 임시 변수 */
   const [news, setNews] = useState(testNewsValue);
-
+  const [isLogin, setIsLogin] = useState(false);
   const [userNick, setUserNick] = useState("");
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
   const [showLoginModal, setShowLoginModal] = useState(false); //로그인을 위한 변수
   const [showSignupModal, setShowSignupModal] = useState(false); //회원가입을 위한 변수
   const [showModifyModal, setShowModifyModal] = useState(false); // 회원정보수정을 위한 변수
-  const { isLogin, logout, login } = useAuth(); // AuthContext
   const searchRef = useRef(null); // 입력 필드에 대한 참조
   const navigate = useNavigate();
   const storedNick = localStorage.getItem("nickname");
@@ -41,7 +34,6 @@ const Header = () => {
   const frontUrl = process.env.REACT_APP_CORE_FRONT_BASE_URL;
 
   const logoutProcess = async () => {
-    await logout();
     toastNotice("로그아웃 되었습니다.");
   };
 
@@ -66,7 +58,6 @@ const Header = () => {
 
   const handleKeyDown = (e: any) => {
     if (e.key === "Enter") {
-      updateSearchTag({ tag: searchTag });
       navigate(`/article/${searchTag}`);
     }
   };
@@ -106,10 +97,8 @@ const Header = () => {
         .then((data) => {
           if (data.resultCode === "200") {
             console.log("유효!!!!");
-            login();
           } else {
             console.log("유효하지 않은 토큰입니다.");
-            logout();
           }
         })
         .catch((error) => {
@@ -316,7 +305,7 @@ const Header = () => {
           )}
         </div>
       </div>
-      <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />
+      {/* <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />
       <SignupModal
         showModal={showSignupModal}
         setShowModal={setShowSignupModal}
@@ -324,7 +313,7 @@ const Header = () => {
       <ModifyModal
         showModal={showModifyModal}
         setShowModal={setShowModifyModal}
-      />
+      /> */}
     </>
   );
 };

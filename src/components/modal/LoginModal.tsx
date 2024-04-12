@@ -1,14 +1,12 @@
+import React from 'react';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useAuth } from '../../delete/AuthContext';
-
-import { useAuthInfo } from '../../utils/zustand/auth/loginState';
 import { useShowLoginModal } from '../../utils/zustand/display/displayState';
 import { useLogin } from '../../utils/reactQuery/loginQuery';
 const LoginModal = () => {
   const { showModal, setShowModal } = useShowLoginModal();
-  const { userName, password } = useAuthInfo().signupData;
-  const { setUserName, setPassword } = useAuthInfo();
+  const [userName, setUserName] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const handleLogin = async (e: any) => {
     e.preventDefault();

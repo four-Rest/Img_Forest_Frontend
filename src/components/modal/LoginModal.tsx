@@ -1,56 +1,21 @@
-import {
-  faComment
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { faComment } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAuth } from '../../delete/AuthContext';
-import { toastNotice, toastWarning } from "../toastr/ToastrConfig";
 
-const LoginModal = ({ showModal, setShowModal }: any) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+import { useAuthInfo } from '../../utils/zustand/auth/loginState';
+import { useShowLoginModal } from '../../utils/zustand/display/displayState';
+import { useLogin } from '../../utils/reactQuery/loginQuery';
+const LoginModal = () => {
+  const { showModal, setShowModal } = useShowLoginModal();
+  const { userName, password } = useAuthInfo().signupData;
+  const { setUserName, setPassword } = useAuthInfo();
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
-
-  const { login , logout } = useAuth() as any;
-  const signupData = {
-    username,
-    password,
-  };
-
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    try {
-      const response = await fetch(`${apiUrl}/api/member/login`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(signupData),
-      });
-      if (response.ok) {
-        const res = await response.json(); // 응답이 성공적인 경우에만 JSON 파싱
-        localStorage.setItem("username", res.data.username);
-        localStorage.setItem("nickname", res.data.nickname);
-        localStorage.setItem('isLogin', 'true');
-      
-        login();
-        setShowModal(false); // 로그인 성공 후 모달 닫기
-        console.log("로그인")
-        toastNotice("로그인 완료.");
-      } else {
-        // 서버 에러 처리
-        const errorData = await response.json();
-        toastWarning("존재하지 않는 회원입니다.");
-        logout();
-      }
-    } catch (error) {
-      console.error("login Error:", error);
-      logout();
-    }
+    useLogin();
   };
 
-  if (!showModal) return null;
+  if (!useShowLoginModal().showModal) return null;
   const handleKakaoLogin = () => {
     const kakaoLoginUrl = `${apiUrl}/oauth2/authorization/kakao`;
 
@@ -83,8 +48,8 @@ const LoginModal = ({ showModal, setShowModal }: any) => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
                 />
               </div>
               <div className="form-control w-full mb-4 flex flex-col items-center">

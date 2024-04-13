@@ -2,12 +2,12 @@ import { create } from 'zustand';
 
 type LoginStat = {
   loginState: boolean;
-  setIsLogin: (toggleLoginState: boolean) => void;
-  setIsLogout: (toggleLoginState: boolean) => void;
+  setIsLogin: () => void;
+  setIsLogout: () => void;
 };
-
-const useLoginState = create<LoginStat>()((set) => ({
+//로그인 상태, 로그아웃 상태
+export const useLoginState = create<LoginStat>()((set) => ({
   loginState: false,
-  setIsLogin: (toggleLoginState) => set({ loginState: toggleLoginState }),
-  setIsLogout: (toggleLoginState) => set({ loginState: toggleLoginState }),
+  setIsLogin: () => set({ loginState: true }),
+  setIsLogout: () => set({ loginState: false }),
 }));

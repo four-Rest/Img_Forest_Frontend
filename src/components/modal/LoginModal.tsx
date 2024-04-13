@@ -10,7 +10,8 @@ const LoginModal = () => {
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    useLogin();
+
+    useLogin({ userName, password });
   };
 
   if (!useShowLoginModal().showModal) return null;

@@ -1,72 +1,28 @@
-import {
-  faComment
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import { toastNotice, toastWarning } from "../toastr/ToastrConfig";
-const SignupModal = ({ showModal, setShowModal }: any) => {
-  const [username, setUsername] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [email, setEmail] = useState("");
-  const [nickname, setNickname] = useState("");
-  const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+import { useSignUp } from '../../utils/reactQuery/signUpQuery';
+import { useShowsingUpModal } from '../../utils/zustand/display/displayState';
 
+const SignupModal = () => {
+  const [userName, setUserName] = useState('');
+  const [password1, setPassword1] = useState('');
+  const [password2, setPassword2] = useState('');
+  const [email, setEmail] = useState('');
+  const [nickName, setNickName] = useState('');
+  const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const { showModal, setShowModal } = useShowsingUpModal();
   const signupData = {
-    username,
+    userName,
     password1,
     password2,
     email,
-    nickname,
+    nickName,
   };
   const handleSignup: any = async (e: MouseEvent) => {
     e.preventDefault();
-
-    if (!passwordCheck()) {
-      toastWarning("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-    if (!blankCheck()) {
-      toastWarning("필수 정보를 모두 입력해주세요.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}/api/member/signup`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(signupData),
-      });
-
-      if (response.ok) {
-        setShowModal(false); // 회원가입 성공 후 모달 닫기
-        toastNotice("회원가입 완료.");
-      } else {
-        // 서버 에러 처리
-        const errorData = await response.json();
-        toastWarning("중복된 이름입니다.");
-      }
-    } catch (error) {
-      console.error("Signup Error:", error);
-    }
+    useSignUp(signupData);
   };
-
-  function passwordCheck() {
-    return password1 === password2;
-  }
-
-  function blankCheck() {
-    return (
-      username.trim() &&
-      password1.trim() &&
-      password2.trim() &&
-      email.trim() &&
-      nickname.trim()
-    );
-  }
 
   if (!showModal) return null;
 
@@ -103,8 +59,8 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
                 />
               </div>
               <div className="form-control w-full mb-4 flex flex-col items-center">
@@ -151,8 +107,8 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="text"
                   placeholder="닉네임을 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
+                  value={nickName}
+                  onChange={(e) => setNickName(e.target.value)}
                 />
               </div>
 

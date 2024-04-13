@@ -13,3 +13,16 @@ export const useShowLoginModal = create<LoginModalDisplay>()((set) => ({
     }));
   },
 }));
+type singUpModalDisplay = {
+  showModal: boolean;
+  setShowModal: (toggle: boolean) => void;
+};
+
+export const useShowsingUpModal = create<singUpModalDisplay>()((set) => ({
+  showModal: false,
+  setShowModal: (toggle) => {
+    set(() => ({
+      showModal: toggle,
+    }));
+  },
+}));

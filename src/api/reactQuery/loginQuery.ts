@@ -1,22 +1,23 @@
 import { useMutation } from '@tanstack/react-query';
-import { useShowLoginModal } from '../zustand/display/displayState';
-import { useLoginState } from '../zustand/auth/loginState';
+import { useShowLoginModal } from '../../store/display/displayState';
+import { useLoginState } from '../../store/auth/loginState';
 import {
   toastNotice,
   toastWarning,
 } from '../../components/toastr/ToastrConfig';
 
-// const { login, logout } = useAuth() as any; //이건뭐지
-
 const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
-const { setIsLogin, setIsLogout } = useLoginState();
 //로그인
 
 export const useLogin = (signupData: {
-  userName: string;
+  username: string;
   password: string;
 }) => {
+  const { setIsLogin } = useLoginState();
+  const { setShowLoginModal } = useShowLoginModal();
+  const logout = useLogout();
+
   return useMutation({
     mutationFn: async () => {
       const response = await fetch(`${apiUrl}/api/member/login`, {
@@ -27,35 +28,33 @@ export const useLogin = (signupData: {
         credentials: 'include',
         body: JSON.stringify(signupData),
       });
-      if (!response.ok) {
-        // 서버 에러 처리
-        const errorData = await response.json();
-        toastWarning('존재하지 않는 회원입니다.');
-        useLogout(); //context의 로그아웃 로직 구현해야댐
-      }
 
-      return response.json();
+      return response;
     },
-    onSuccess: (data: any) => {
-      console.log('성공', data);
+    onSuccess: (data) => {
+      if (data.ok) {
+        setIsLogin();
+        setShowLoginModal(false); // 로그인 성공 후 모달 닫기
+        console.log('로그인');
+        toastNotice('로그인 완료.');
+      } else {
+        // 서버 에러 처리
 
-      localStorage.setItem('username', data.data.username);
-      localStorage.setItem('nickname', data.data.nickname);
-      localStorage.setItem('isLogin', 'true');
+        toastWarning('존재하지 않는 회원입니다.');
 
-      setIsLogin();
-      useShowLoginModal().setShowModal(false); // 로그인 성공 후 모달 닫기
-      console.log('로그인');
-      toastNotice('로그인 완료.');
+        //context의 로그아웃 로직 구현해야댐
+      }
     },
     onError: (error: Error) => {
       console.error('login Error:', error);
-      useLogout();
+
+      logout.mutate();
     },
   });
 };
 
-const useLogout = () => {
+export const useLogout = () => {
+  const { setIsLogout } = useLoginState();
   return useMutation({
     mutationFn: async () => {
       const response = await fetch(`${apiUrl}/api/member/logout`, {
@@ -66,9 +65,7 @@ const useLogout = () => {
         },
       });
 
-      if (!response.ok) {
-        throw new Error('로그아웃에 실패했습니다.');
-      }
+      return response.json();
     },
     onSuccess: () => {
       // 로그아웃 성공 시 처리할 작업 수행
@@ -76,6 +73,7 @@ const useLogout = () => {
       localStorage.removeItem('nickname');
       localStorage.removeItem('isLogin');
       setIsLogout();
+
       window.location.href = `/`;
     },
     onError: (error) => {

@@ -5,36 +5,42 @@ import {
   faDoorClosed,
   faDoorOpen,
   faPen,
-  faRectangleList
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "../../App.css";
-import { toastNotice } from "../toastr/ToastrConfig";
+  faRectangleList,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '../../App.css';
+import { toastNotice } from '../toastr/ToastrConfig';
+import LoginModal from '../modal/LoginModal';
+import SignupModal from '../modal/SignupModal';
+import {
+  useShowLoginModal,
+  useShowSingUpModal,
+} from '../../store/display/displayState';
 
 const Header = () => {
-  const [searchTag, setSearchTag] = useState("");
+  const [searchTag, setSearchTag] = useState('');
 
   /* 24.03.14 메모. news 기본값은 data fetch로 설정? */
   const testNewsValue = true; /* 24.03.14 메모. 테스트 임시 변수 */
   const [news, setNews] = useState(testNewsValue);
   const [isLogin, setIsLogin] = useState(false);
-  const [userNick, setUserNick] = useState("");
+  const [userNick, setUserNick] = useState('');
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
-  const [showLoginModal, setShowLoginModal] = useState(false); //로그인을 위한 변수
-  const [showSignupModal, setShowSignupModal] = useState(false); //회원가입을 위한 변수
+  const { showLoginModal, setShowLoginModal } = useShowLoginModal();
+  const { showSignUpModal, setShowSignupModal } = useShowSingUpModal();
   const [showModifyModal, setShowModifyModal] = useState(false); // 회원정보수정을 위한 변수
   const searchRef = useRef(null); // 입력 필드에 대한 참조
   const navigate = useNavigate();
-  const storedNick = localStorage.getItem("nickname");
+  const storedNick = localStorage.getItem('nickname');
   // console.log(storedNick);
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const frontUrl = process.env.REACT_APP_CORE_FRONT_BASE_URL;
 
   const logoutProcess = async () => {
-    toastNotice("로그아웃 되었습니다.");
+    toastNotice('로그아웃 되었습니다.');
   };
 
   const handleShowLoginModal = () => {
@@ -43,8 +49,9 @@ const Header = () => {
   };
 
   const handleShowSignupModal = () => {
-    setShowSignupModal(true);
     setShowLoginModal(false); // 로그인 모달이 열려있을 수 있으므로 닫는다
+
+    setShowSignupModal(true);
   };
 
   const handleButtonClick = () => {
@@ -57,58 +64,61 @@ const Header = () => {
   };
 
   const handleKeyDown = (e: any) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       navigate(`/article/${searchTag}`);
     }
   };
 
   const showNotification = () => {
-    console.log("showNotification");
+    console.log('showNotification');
     setNews(false);
     /* 24.03.14 메모. news 값을 계정별로 저장하는 방법? */
   };
 
   useEffect(() => {
     function handleClickOutside(event: any) {
-      if (searchRef.current && !(searchRef.current as any).contains(event.target)) {
+      if (
+        searchRef.current &&
+        !(searchRef.current as any).contains(event.target)
+      ) {
         setSearchVisible(false);
       }
     }
     // 입력 필드가 표시될 때만 이벤트 리스너를 추가
     if (searchVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       // 컴포넌트 정리 시 이벤트 리스너 제거
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [searchVisible]);
 
   useEffect(() => {
-    if (localStorage.getItem("isLogin")) {
+    if (localStorage.getItem('isLogin')) {
       fetch(`${apiUrl}/api/member/checkAccessToken`, {
-        method: "POST",
-        credentials: "include",
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.resultCode === "200") {
-            console.log("유효!!!!");
+          if (data.resultCode === '200') {
+            console.log('유효!!!!');
           } else {
-            console.log("유효하지 않은 토큰입니다.");
+            console.log('유효하지 않은 토큰입니다.');
           }
         })
         .catch((error) => {
-          console.error("에러 발생 :", error);
+          console.error('에러 발생 :', error);
         });
     }
   }, []);
 
   useEffect(() => {
-    const storedNick = localStorage.getItem("nickname");
+    const storedNick = localStorage.getItem('nickname');
     if (storedNick) {
       setUserNick(storedNick);
     }
@@ -119,26 +129,29 @@ const Header = () => {
       <div
         className="navbar bg-base-100"
         style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          position: "fixed",
+          display: 'flex',
+          justifyContent: 'flex-end',
+          position: 'fixed',
           left: 0,
           top: 0,
-          height: "40px",
-          width: "100%",
+          height: '40px',
+          width: '100%',
           zIndex: 9999,
-        }}>
+        }}
+      >
         <div className="navbar-start">
           <div className="dropdown">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle">
+              className="btn btn-ghost btn-circle"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -149,26 +162,27 @@ const Header = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            >
               {isLogin ? (
                 <>
                   <li>
                     <Link
-                    to=""
+                      to=""
                       className="nav-link"
                       onClick={() => {
                         setShowSignupModal(false);
                         setShowLoginModal(false);
                         setShowModifyModal(true);
-                      }}>
+                      }}
+                    >
                       <FontAwesomeIcon icon={faAddressCard} /> 내 정보 수정
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to={`/myarticle/${
-                        storedNick !== null ? storedNick : ""
-                      }`}>
+                      to={`/myarticle/${storedNick !== null ? storedNick : ''}`}
+                    >
                       <FontAwesomeIcon icon={faRectangleList} /> 내 글 보기
                     </Link>
                   </li>
@@ -187,13 +201,21 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link to={``} className="nav-link" onClick={handleShowLoginModal}>
+                    <Link
+                      to={``}
+                      className="nav-link"
+                      onClick={handleShowLoginModal}
+                    >
                       <FontAwesomeIcon icon={faDoorOpen} />
                       로그인
                     </Link>
                   </li>
                   <li>
-                    <Link to={``} className="nav-link" onClick={handleShowSignupModal}>
+                    <Link
+                      to={``}
+                      className="nav-link"
+                      onClick={handleShowSignupModal}
+                    >
                       <FontAwesomeIcon icon={faDoorOpen} />
                       회원가입
                     </Link>
@@ -214,13 +236,15 @@ const Header = () => {
           {!searchVisible && (
             <button
               className="btn btn-ghost btn-circle"
-              onClick={handleButtonClick}>
+              onClick={handleButtonClick}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`h-5 w-5`}
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -247,21 +271,23 @@ const Header = () => {
           {/* 24.03.14 메모. open or close를 위한
           Dropdown menu using <details> tag 선택지는 잠시 보류 */}
           {isLogin ? (
-            ""
+            ''
           ) : (
             <>
               <div className="dropdown dropdown-bottom dropdown-end">
                 {/* <div tabIndex={0} role="button"> */}
                 <button
                   className="btn btn-ghost btn-circle"
-                  onClick={showNotification}>
+                  onClick={showNotification}
+                >
                   <div className="indicator">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor">
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -272,7 +298,7 @@ const Header = () => {
                     {news ? (
                       <span className="badge badge-xs badge-primary indicator-item"></span>
                     ) : (
-                      ""
+                      ''
                     )}
                   </div>
                 </button>
@@ -282,18 +308,19 @@ const Header = () => {
                 {/* 24.03.14 메모. Link 누르면 클릭 배경색 고정되는 것(로그인 모달도 동일)*/}
                 <ul
                   tabIndex={0}
-                  className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80">
+                  className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80"
+                >
                   {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성해야 할듯 */}
                   <li>
                     <Link to={`/`}>
-                      <p>👍 {"user1"}님이 좋아합니다.</p>
+                      <p>👍 {'user1'}님이 좋아합니다.</p>
                       <img src="https://www.allrecipes.com/thmb/eKu_vXTbZJMdFsd5JdbY7kvDy80=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/79543-fried-rice-restaurant-style-DDMFS-4x3-b79a6ea27e0344399257ca1df67ca1cd.jpg" />
                     </Link>
                   </li>
                   <li>
                     <Link to={`/`}>
                       <div>
-                        <p>💬 {"user2"}님이 댓글을 남겼습니다.</p>
+                        <p>💬 {'user2'}님이 댓글을 남겼습니다.</p>
                         <p>{'"맨유 화이팅"'}</p>
                       </div>
                       <img src="https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F08%2Fadidas-signs-premier-league-record-1-15-billion-manchester-united-sponsorship-with-increased-focus-on-womens-team-info-01.jpg?cbr=1&q=90" />
@@ -305,6 +332,8 @@ const Header = () => {
           )}
         </div>
       </div>
+      <LoginModal />
+      <SignupModal />
       {/* <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />
       <SignupModal
         showModal={showSignupModal}

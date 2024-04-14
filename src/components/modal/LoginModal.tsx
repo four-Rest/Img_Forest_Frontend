@@ -1,20 +1,21 @@
 import React from 'react';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useShowLoginModal } from '../../utils/zustand/display/displayState';
-import { useLogin } from '../../utils/reactQuery/loginQuery';
+import { useShowLoginModal } from '../../store/display/displayState';
+import { useLogin } from '../../api/reactQuery/loginQuery';
 const LoginModal = () => {
-  const { showModal, setShowModal } = useShowLoginModal();
-  const [userName, setUserName] = React.useState<string>('');
+  const { showLoginModal, setShowLoginModal } = useShowLoginModal();
+  const [username, setUserName] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const login = useLogin({ username, password });
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
-    useLogin({ userName, password });
+    login.mutate();
   };
 
-  if (!useShowLoginModal().showModal) return null;
+  // if (!showModal) return null;
   const handleKakaoLogin = () => {
     const kakaoLoginUrl = `${apiUrl}/oauth2/authorization/kakao`;
 
@@ -23,18 +24,18 @@ const LoginModal = () => {
   };
   return (
     <>
-      <button className="btn" onClick={() => setShowModal(true)}>
+      <button className="btn" onClick={() => setShowLoginModal(true)}>
         로그인
       </button>
 
-      {showModal && (
+      {showLoginModal && (
         <div className="modal modal-open">
           <div className="modal-box">
             <form>
               <label
                 htmlFor="login-modal"
                 className="btn btn-sm btn-circle absolute right-2 top-2"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowLoginModal(false)}
               >
                 ✕
               </label>
@@ -47,7 +48,7 @@ const LoginModal = () => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={userName}
+                  value={username}
                   onChange={(e) => setUserName(e.target.value)}
                 />
               </div>

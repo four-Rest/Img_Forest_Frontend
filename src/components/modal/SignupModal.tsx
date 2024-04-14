@@ -1,30 +1,53 @@
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { useSignUp } from '../../utils/reactQuery/signUpQuery';
-import { useShowsingUpModal } from '../../utils/zustand/display/displayState';
-
+import { useSignUp } from '../../api/reactQuery/signUpQuery';
+import { useShowSingUpModal } from '../../store/display/displayState';
+import { toastWarning } from '../../components/toastr/ToastrConfig';
 const SignupModal = () => {
-  const [userName, setUserName] = useState('');
+  const [username, setUserName] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
   const [email, setEmail] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [nickname, setNickName] = useState('');
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
-  const { showModal, setShowModal } = useShowsingUpModal();
+  const { showSignUpModal, setShowSignupModal } = useShowSingUpModal();
   const signupData = {
-    userName,
+    username,
     password1,
     password2,
     email,
-    nickName,
+    nickname,
   };
+  const signUp = useSignUp(signupData);
+  function passwordCheck() {
+    return password1 === password2;
+  }
+
+  function blankCheck() {
+    return (
+      username.trim() &&
+      password1.trim() &&
+      password2.trim() &&
+      email.trim() &&
+      nickname.trim()
+    );
+  }
+
   const handleSignup: any = async (e: MouseEvent) => {
     e.preventDefault();
-    useSignUp(signupData);
+    if (!blankCheck()) {
+      toastWarning('필수 정보를 모두 입력해주세요.');
+      return;
+    }
+    if (!passwordCheck()) {
+      toastWarning('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    signUp.mutate();
   };
 
-  if (!showModal) return null;
+  if (!showSignUpModal) return null;
 
   const handleKakaoLogin = () => {
     const kakaoLoginUrl = `${apiUrl}/oauth2/authorization/kakao`;
@@ -35,18 +58,18 @@ const SignupModal = () => {
 
   return (
     <>
-      <button className="btn" onClick={() => setShowModal(true)}>
+      <button className="btn" onClick={() => setShowSignupModal(true)}>
         회원가입
       </button>
 
-      {showModal && (
+      {showSignUpModal && (
         <div className="modal modal-open">
           <div className="modal-box">
             <form>
               <label
                 htmlFor="login-modal"
                 className="btn btn-sm btn-circle absolute right-2 top-2"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowSignupModal(false)}
               >
                 ✕
               </label>
@@ -59,7 +82,7 @@ const SignupModal = () => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={userName}
+                  value={username}
                   onChange={(e) => setUserName(e.target.value)}
                 />
               </div>
@@ -107,7 +130,7 @@ const SignupModal = () => {
                   type="text"
                   placeholder="닉네임을 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={nickName}
+                  value={nickname}
                   onChange={(e) => setNickName(e.target.value)}
                 />
               </div>

@@ -6,17 +6,17 @@ import {
 import { useShowSingUpModal } from '../../store/display/displayState';
 const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
-export const useSignUp = (signupData: {
-  username: string;
-  password1: string;
-  password2: string;
-  email: string;
-  nickname: string;
-}) => {
+export const useSignUp = () => {
   const { setShowSignupModal } = useShowSingUpModal();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (signupData: {
+      username: string;
+      password1: string;
+      password2: string;
+      email: string;
+      nickname: string;
+    }) => {
       const response = await fetch(`${apiUrl}/api/member/signup`, {
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export const useSignUp = (signupData: {
         body: JSON.stringify(signupData),
       });
       if (response.ok) {
-        setShowSignupModal(false); // 회원가입 성공 후 모달 닫기 이건 주스탠드에 있는 상태다
+        setShowSignupModal(false); // 회원가입 성공 후 모달 닫기 이건 주스탠드에 있는 상태다 200이 출력돼서 검증이안댐
 
         toastNotice('회원가입 완료.');
       } else {

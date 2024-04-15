@@ -10,16 +10,13 @@ const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
 //로그인
 
-export const useLogin = (signupData: {
-  username: string;
-  password: string;
-}) => {
+export const useLogin = () => {
   const { setIsLogin } = useLoginState();
   const { setShowLoginModal } = useShowLoginModal();
   const logout = useLogout();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (signupData: { username: string; password: string }) => {
       const response = await fetch(`${apiUrl}/api/member/login`, {
         headers: {
           'Content-Type': 'application/json',

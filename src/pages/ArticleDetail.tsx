@@ -1,7 +1,5 @@
 import { Suspense } from 'react';
-import { useParams } from 'react-router-dom';
 import ArticleAPI from '../api/ArticleAPI';
-import TempAuth from '../api/tempAuth';
 import ArticleDetailContainer from '../components/article/ArticleDetailContainer';
 import CommentContainer from '../components/comment/CommentContainer';
 
@@ -46,9 +44,7 @@ interface IArticleResDataType {
 }
 
 const ArticleDetail = () => {
-  TempAuth();
-  const { id } = useParams();
-  const articleResData = ArticleAPI.readArticle(id);
+  const articleResData = ArticleAPI.readArticle();
   return (
     <Suspense fallback={<div> 로딩중 </div>}>
       {articleResData?.data && (

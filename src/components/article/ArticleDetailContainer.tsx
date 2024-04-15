@@ -5,6 +5,10 @@
  * @description 단일 이미지 글 조회
  */
 
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import ArticleAPI from '../../api/ArticleAPI';
+
 interface IArticleDetailType {
   content: string;
   id: number;
@@ -20,6 +24,12 @@ interface IArticleDetailType {
 
 const ArticleDetailContainer = (props: IArticleDetailType | any) => {
   const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
+  const [isLike, setIsLike] = useState<boolean>(props.data.likeValue);
+  const createDeleteArticleLikeMutation = ArticleAPI.createDeleteLikeArticle({
+    onErrorHandler: () => {
+      setIsLike((prev) => !prev);
+    },
+  });
 
   const {
     content,
@@ -47,6 +57,11 @@ const ArticleDetailContainer = (props: IArticleDetailType | any) => {
     downloadImage(imagePath, imgFileName);
   };
 
+  const likeHandler = () => {
+    createDeleteArticleLikeMutation.mutate(isLike ? 'delete' : 'create');
+    setIsLike((prev) => !prev);
+  };
+
   return (
     <div
       className={
@@ -54,16 +69,23 @@ const ArticleDetailContainer = (props: IArticleDetailType | any) => {
       }
     >
       {/* 이미지 */}
-      <div className={'max-w-120 relative flex justify-center'}>
-        <img src={`${imgUrl}/${imgFilePath}/${imgFileName}`} alt="dd" />
-        <button
-          className={
-            'absolute right-1 top-1 rounded-xl bg-white p-2 outline-2 outline-red-200'
-          }
-        >
-          {' '}
-          {likeValue ? '❤️' : '🖤'} {likes}{' '}
-        </button>
+      <div className={'max-w-120 flex justify-center'}>
+        <div className={'relative flex justify-center'}>
+          <img
+            src={`${imgUrl}/${imgFilePath}/${imgFileName}`}
+            alt="dd"
+            className={'max-h-[40rem]'}
+          />
+          <button
+            className={
+              'absolute right-1 top-1 rounded-xl bg-white p-2 outline-2 outline-red-200'
+            }
+            onClick={likeHandler}
+          >
+            {isLike ? '❤️' : '🖤'}
+            {likes + (props.data.likeValue ? Number(isLike) - 1 : isLike)}
+          </button>
+        </div>
       </div>
       {/* 이미지 설명 */}
       <div className={'flex flex-col justify-between gap-4'}>
@@ -72,7 +94,7 @@ const ArticleDetailContainer = (props: IArticleDetailType | any) => {
             {tags &&
               (tags as string[]).map((tag: string, index: number) => (
                 <li key={index} className={'rounded-xl bg-gray-200 p-2'}>
-                  {tag}
+                  <Link to={`/?tagName=${tag}`}>{tag}</Link>
                 </li>
               ))}
           </ul>
@@ -86,24 +108,22 @@ const ArticleDetailContainer = (props: IArticleDetailType | any) => {
           </div>
           <div className={'flex justify-between'}>
             <p className={'font-bold'}> 가격 </p>
-            <span> {price} </span>
+            <span> {price ?? '무료'} </span>
           </div>
         </div>
-        {paid ? (
-          <button
-            className={'h-12 w-full rounded-2xl bg-orange-400 text-white'}
-            onClick={handleDownload}
-          >
-            {' '}
-            {price} 원 / 유료{' '}
-          </button>
-        ) : (
+        {price == null || paid ? (
           <button
             className={'h-12 w-full rounded-2xl bg-green-700 text-white'}
             onClick={handleDownload}
           >
-            {' '}
-            다운로드{' '}
+            다운로드
+          </button>
+        ) : (
+          <button
+            className={'h-12 w-full rounded-2xl bg-orange-400 text-white'}
+            onClick={handleDownload}
+          >
+            {price} 원 / 유료
           </button>
         )}
       </div>

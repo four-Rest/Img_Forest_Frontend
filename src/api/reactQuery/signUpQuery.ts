@@ -25,7 +25,11 @@ export const useSignUp = () => {
         credentials: 'include',
         body: JSON.stringify(signupData),
       });
-      if (response.ok) {
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (!data.error) {
         setShowSignupModal(false); // 회원가입 성공 후 모달 닫기 이건 주스탠드에 있는 상태다 200이 출력돼서 검증이안댐
 
         toastNotice('회원가입 완료.');
@@ -33,7 +37,6 @@ export const useSignUp = () => {
         toastWarning('중복된 이름입니다.');
         return;
       }
-      return response;
     },
     onError: (error: Error) => {
       console.error('Signup Error:', error);

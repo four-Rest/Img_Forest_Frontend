@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useShowLoginModal } from '../../store/display/displayState';
 import { useLoginState } from '../../store/auth/loginState';
+
 import {
   toastNotice,
   toastWarning,
@@ -9,37 +10,38 @@ import {
 const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
 //로그인
-
+const loginApi = async (signupData: { username: string; password: string }) => {
+  const response = await fetch(`${apiUrl}/api/member/login`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(signupData),
+  });
+  return response.json();
+};
 export const useLogin = () => {
-  const { setIsLogin } = useLoginState();
+  const { setIsLogin, setUserName, setNickName } = useLoginState();
   const { setShowLoginModal } = useShowLoginModal();
   const logout = useLogout();
 
   return useMutation({
-    mutationFn: async (signupData: { username: string; password: string }) => {
-      const response = await fetch(`${apiUrl}/api/member/login`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(signupData),
-      });
-
-      return response;
-    },
+    mutationFn: loginApi,
     onSuccess: (data) => {
-      if (data.ok) {
+      if (data.error) {
+        // 에러 메시지가 존재하는 경우
+        console.error('Login Error:', data.error); // 에러 메시지 토스트로 표시
+        toastWarning('존재하지 않는 회원입니다.');
+        logout.mutate(); // 로그아웃 처리
+      } else {
+        // 에러가 없는 경우
+        setUserName(data.data.username);
+        setNickName(data.data.nickname);
         setIsLogin();
         setShowLoginModal(false); // 로그인 성공 후 모달 닫기
         console.log('로그인');
-        toastNotice('로그인 완료.');
-      } else {
-        // 서버 에러 처리
-
-        toastWarning('존재하지 않는 회원입니다.');
-
-        //context의 로그아웃 로직 구현해야댐
+        toastNotice('로그인 완료.'); // 성공 메시지 토스트로 표시
       }
     },
     onError: (error: Error) => {
@@ -51,7 +53,7 @@ export const useLogin = () => {
 };
 
 export const useLogout = () => {
-  const { setIsLogout } = useLoginState();
+  const { setIsLogout, setUserName, setNickName } = useLoginState();
   return useMutation({
     mutationFn: async () => {
       const response = await fetch(`${apiUrl}/api/member/logout`, {
@@ -66,12 +68,10 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       // 로그아웃 성공 시 처리할 작업 수행
-      localStorage.removeItem('username');
-      localStorage.removeItem('nickname');
-      localStorage.removeItem('isLogin');
+      setUserName('');
+      setNickName('');
       setIsLogout();
-
-      window.location.href = `/`;
+      // window.location.href = `/`;
     },
     onError: (error) => {
       // 로그아웃 실패 시 처리할 작업 수행

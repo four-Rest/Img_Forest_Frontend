@@ -1,5 +1,6 @@
 import React, { useReducer, useRef } from 'react';
 import CommentAPI from '../../api/CommentAPI';
+import { useLoginState } from '../../store/auth/loginState';
 import { timeFunction } from '../../utils/function/timeFunction';
 import Textarea from '../common/textarea/Textarea';
 
@@ -24,20 +25,20 @@ const SubCommentBox = (props: SubCommentBoxType) => {
     if (state) textRef.current!.value = props.content;
     return !state;
   }, false);
-
+  const { username } = useLoginState();
   const updateCommentMutation = CommentAPI.updateSubComment();
   const deleteCommentMutation = CommentAPI.deleteSubComment();
   const updateCommentHandler = () => {
-    updateCommentMutation({
-      username: props.username!,
+    updateCommentMutation.mutate({
+      username: username!,
       content: textRef.current!.value,
       replyId: props.id,
       commentId: props.parentCommentId,
     });
   };
   const deleteCommentHandler = () => {
-    deleteCommentMutation({
-      username: props.username!,
+    deleteCommentMutation.mutate({
+      username: username!,
       replyId: props.id,
       commentId: props.parentCommentId,
     });

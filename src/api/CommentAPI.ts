@@ -31,7 +31,7 @@ const createMainComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -40,7 +40,6 @@ const createMainComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 type updateMainCommentType = {
@@ -65,7 +64,7 @@ const updateMainComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -74,7 +73,6 @@ const updateMainComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 type deleteMainCommentType = {
@@ -98,7 +96,7 @@ const deleteMainComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -107,7 +105,6 @@ const deleteMainComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 type createSubCommentType = {
@@ -135,7 +132,7 @@ const createSubComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -144,7 +141,6 @@ const createSubComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 type updateSubCommentType = {
@@ -176,7 +172,7 @@ const updateSubComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -185,7 +181,6 @@ const updateSubComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 type deleteSubCommentType = {
@@ -211,7 +206,7 @@ const deleteSubComment = () => {
     return response.json();
   };
 
-  const { mutate } = useMutation({
+  return useMutation({
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
@@ -220,7 +215,6 @@ const deleteSubComment = () => {
     },
     // onSettled: (data, error, variables, context) => {},
   });
-  return mutate;
 };
 
 const CommentAPI = {

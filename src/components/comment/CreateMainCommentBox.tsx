@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import CommentAPI from '../../api/CommentAPI';
+import { useLoginState } from '../../store/auth/loginState';
 import Textarea from '../common/textarea/Textarea';
 
 /**
@@ -16,10 +17,11 @@ type ICommentType = {
 const CreateMainCommentBox = (props: ICommentType) => {
   const textRef = useRef<HTMLTextAreaElement>(null);
   const createCommentMutation = CommentAPI.createMainComment();
+  const { username } = useLoginState();
   const createCommentHandler = () => {
-    createCommentMutation({
+    createCommentMutation.mutate({
       articleId: props.articleId!,
-      username: localStorage.getItem('username')!,
+      username: username,
       content: textRef.current!.value,
     });
   };

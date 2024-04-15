@@ -18,7 +18,7 @@ const CreateSubCommentBox = (props: ICommentType) => {
   const createCommentMutation = CommentAPI.createSubComment();
   const textRef = useRef<HTMLTextAreaElement>(null);
   const createCommentHandler = () => {
-    createCommentMutation({
+    createCommentMutation.mutate({
       commentId: props.commentId!,
       content: textRef.current!.value,
     });

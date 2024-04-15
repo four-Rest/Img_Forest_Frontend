@@ -2,6 +2,7 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useReducer, useRef } from 'react';
 import CommentAPI from '../../api/CommentAPI';
+import { useLoginState } from '../../store/auth/loginState';
 import { timeFunction } from '../../utils/function/timeFunction';
 import Textarea from '../common/textarea/Textarea';
 import CreateSubCommentBox from './CreateSubCommentBox';
@@ -34,6 +35,7 @@ type childCommentsType = {
 };
 
 const MainCommentBox = (props: MainCommentBoxType) => {
+  const { username } = useLoginState();
   const [isShowSubCommentList, IsShowSubCommentListToggle] = useReducer(
     (state) => !state,
     false,
@@ -47,17 +49,17 @@ const MainCommentBox = (props: MainCommentBoxType) => {
   const updateCommentMutation = CommentAPI.updateMainComment();
   const deleteCommentMutation = CommentAPI.deleteMainComment();
   const updateCommentHandler = () => {
-    updateCommentMutation({
+    updateCommentMutation.mutate({
       articleId: props.articleId!,
-      username: props.username!,
+      username: username,
       content: textRef.current!.value,
       commentId: props.id,
     });
   };
   const deleteCommentHandler = () => {
-    deleteCommentMutation({
+    deleteCommentMutation.mutate({
       articleId: props.articleId!,
-      username: props.username!,
+      username: username,
       commentId: props.id,
     });
   };

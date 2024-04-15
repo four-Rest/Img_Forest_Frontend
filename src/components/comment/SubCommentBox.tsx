@@ -61,7 +61,7 @@ const SubCommentBox = (props: SubCommentBoxType) => {
         disabled={!isModifyStatus}
       />
       <div className={'flex justify-end gap-2'}>
-        {true && (
+        {username == props.username && (
           <React.Fragment>
             {isModifyStatus && (
               <button onClick={updateCommentHandler}>제출</button>
@@ -71,7 +71,7 @@ const SubCommentBox = (props: SubCommentBoxType) => {
             </button>
           </React.Fragment>
         )}
-        {true && (
+        {username == props.username && (
           <button
             className={'text-red-400 hover:font-bold'}
             onClick={deleteCommentHandler}

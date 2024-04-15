@@ -73,7 +73,7 @@ const MainCommentBox = (props: MainCommentBoxType) => {
       <div className={'flex flex-col gap-2 rounded-lg bg-orange-200 p-2'}>
         <div className={'flex items-center gap-4'}>
           {/* 인증관련 수정 필요 */}
-          <div>{props.username}</div>
+          <div className={'font-bold'}>{props.username}</div>
           <span className={'text-sm text-gray-400'}>
             {timeFunction.timeFromToday(new Date(props.createdDate))}
           </span>

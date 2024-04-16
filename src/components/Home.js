@@ -1,10 +1,5 @@
-<<<<<<<< HEAD:src/delete/Home.tsx
-import { useEffect, useRef, useState } from "react";
-import "../styles/styles.css";
-========
 import React, { useState, useEffect, useRef } from "react";
-import "./styles.css";
->>>>>>>> dev:src/components/layouts/old/Home.js
+import "../styles/styles.css";
 
 function Home() {
   const [articleData, setArticleData] = useState([]); // 이미지 데이터 배열
@@ -66,9 +61,9 @@ function Home() {
 
   return (
     <div className="container">
-      {articleData.slice(startIndex, endIndex).map((article: any) => (
+      {articleData.slice(startIndex, endIndex).map((article) => (
         <div key={article.id} className="box">
-          {/* <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" /> */}
+          <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" />
         </div>
       ))}
       <div ref={target}></div>

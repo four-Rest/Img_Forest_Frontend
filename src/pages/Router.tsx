@@ -1,19 +1,20 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Footer from "../components/layouts/Footer";
-import Header from "../components/layouts/Header";
-import Article from "./Article";
-import ArticleTag from "./ArticleTag";
-import Detail from "./Detail";
-import Modify from "./Modify";
-import MyArticles from "./MyArticles";
-import Payment from "./Payment";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Footer from '../components/layouts/Footer';
+import Header from '../components/layouts/Header';
+import Article from './Article';
+import ArticleTag from './ArticleTag';
+import Detail from './Detail';
+import Modify from './Modify';
+import MyArticles from './MyArticles';
+import Payment from './Payment';
+import CheckSocialLogin from '../api/CheckSocialLogin';
 function Router() {
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<div> 123 </div>} />
+          <Route path="/" element={<CheckSocialLogin />} />
           {/* <Route path="/" element={<HomePaging />} /> */}
           <Route path="/article" element={<Article />} />
           <Route path="/payment" element={<Payment />} />

@@ -1,35 +1,33 @@
-import { createContext, useMemo, useState } from "react";
+// import { createContext, useMemo, useState } from "react";
 
+// const SearchTagContext = createContext();
 
-const SearchTagContext = createContext();
+// function SearchTagProvider({children}) {
+//     const [searchTag, setSearchTag] = useState({
 
-function SearchTagProvider({children}) {
-    const [searchTag, setSearchTag] = useState({
+//         tag:'',
 
-        tag:'',
+//     });
 
-    });
+//     const updateSearchTag = newPayload => {
+//         setSearchTag(newPayload);
+//     };
 
-    const updateSearchTag = newPayload => {
-        setSearchTag(newPayload);
-    };
+//     const SearchTagValue = useMemo(
 
+//         () => ({
+//             searchTag,
+//             updateSearchTag,
+//         }),
+//         [searchTag,updateSearchTag],
+//     );
 
-    const SearchTagValue = useMemo(
+//     console.log("Tag is : ", searchTag.tag);
 
-        () => ({
-            searchTag,
-            updateSearchTag,
-        }),
-        [searchTag,updateSearchTag],
-    );
-
-    console.log("Tag is : ", searchTag.tag); 
-
-    return (
-        <SearchTagContext.Provider value = {SearchTagValue}>
-            {children}
-        </SearchTagContext.Provider>
-    );
-}
-export {SearchTagContext,SearchTagProvider}
+//     return (
+//         <SearchTagContext.Provider value = {SearchTagValue}>
+//             {children}
+//         </SearchTagContext.Provider>
+//     );
+// }
+// export {SearchTagContext,SearchTagProvider}

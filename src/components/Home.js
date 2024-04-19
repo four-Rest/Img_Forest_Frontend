@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './styles.css';
+import React, { useState, useEffect, useRef } from "react";
+import "../styles/styles.css";
 
 function Home() {
   const [articleData, setArticleData] = useState([]); // 이미지 데이터 배열
@@ -18,9 +18,9 @@ function Home() {
         const res = await fetch(`/api/article`); // API에서 이미지 데이터를 가져옴
         const data = await res.json(); // 응답 데이터를 JSON 형식으로 변환
         setArticleData((prevData) => prevData.concat(data.data)); // 기존 이미지 데이터에 새로운 데이터를 추가
-        console.log('데이터 개수:', data.data.length); // 데이터 개수를 콘솔에 출력
+        console.log("데이터 개수:", data.data.length); // 데이터 개수를 콘솔에 출력
       } catch (error) {
-        console.error('Error fetching article data:', error); // 오류가 발생하면 콘솔에 오류 메시지 출력
+        console.error("Error fetching article data:", error); // 오류가 발생하면 콘솔에 오류 메시지 출력
       }
       setLoading(false); // 로딩 상태를 false로 설정
     };
@@ -37,14 +37,14 @@ function Home() {
           setEndIndex((prevEndIndex) =>
             Math.max(
               prevEndIndex + 10,
-              Math.min(prevEndIndex + 10, articleData.length),
-            ),
+              Math.min(prevEndIndex + 10, articleData.length)
+            )
           ); // endIndex를 업데이트하여 추가 이미지를 표시
           //setEndIndex(prevEndIndex => Math.min(prevEndIndex + 10, articleData.length));
           // 현재 ArticleData.length=45, 어떨때는 40개 렌더링 어떨때는 50개 렌더링
         }
       },
-      { threshold: 0 },
+      { threshold: 0 }
     ); // IntersectionObserver 옵션 설정
 
     if (!loading && target.current) {
@@ -61,9 +61,9 @@ function Home() {
 
   return (
     <div className="container">
-      {articleData.slice(startIndex, endIndex).map((article: any) => (
+      {articleData.slice(startIndex, endIndex).map((article) => (
         <div key={article.id} className="box">
-          {/* <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" /> */}
+          <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" />
         </div>
       ))}
       <div ref={target}></div>

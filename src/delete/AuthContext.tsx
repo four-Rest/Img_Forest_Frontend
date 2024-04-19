@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react';
 import cookie from 'react-cookies';
 const AuthContext = createContext<any>(null!);
 
@@ -10,21 +10,21 @@ export const AuthProvider = ({ children }: any) => {
   const login = () => setIsLogin(true);
 
   function deleteCookie(name: any) {
-    cookie.remove(name, { path: '/', maxAge: 1000}, );
-}
+    cookie.remove(name, { path: '/', maxAge: 1000 });
+  }
 
   const logout = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("nickname");
-    localStorage.removeItem("isLogin");
+    localStorage.removeItem('username');
+    localStorage.removeItem('nickname');
+    localStorage.removeItem('isLogin');
     fetch(`${apiUrl}/api/member/logout`, {
       method: 'POST',
       credentials: 'include',
       headers: {
-          'Content-Type': 'application/json',
-      }
-  });
-    setIsLogin(false)
+        'Content-Type': 'application/json',
+      },
+    });
+    setIsLogin(false);
     window.location.href = `/`;
   };
 
@@ -33,11 +33,10 @@ export const AuthProvider = ({ children }: any) => {
     const decodedPayload = atob(payload); // Base64Url 디코드
     const payloadObj = JSON.parse(decodedPayload); // JSON 문자열을 객체로 변환
     const expiry = payloadObj.exp; // exp 필드 값 추출
-  
+
     return new Date(expiry * 1000); // JavaScript Date 객체로 변환 (밀리초 단위로 변환 필요)
   }
 
-  
   return (
     <AuthContext.Provider value={{ isLogin, login, logout }}>
       {children}

@@ -144,7 +144,7 @@ const Header = () => {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle"
+              className="btn btn-circle btn-ghost"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +162,7 @@ const Header = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
             >
               {isLogin ? (
                 <>
@@ -235,7 +235,7 @@ const Header = () => {
 
           {!searchVisible && (
             <button
-              className="btn btn-ghost btn-circle"
+              className="btn btn-circle btn-ghost"
               onClick={handleButtonClick}
             >
               <svg
@@ -259,7 +259,7 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Type here"
-                className="input input-bordered w-170 max-w-xs"
+                className="w-170 input input-bordered max-w-xs"
                 value={searchTag}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
@@ -274,10 +274,10 @@ const Header = () => {
             ''
           ) : (
             <>
-              <div className="dropdown dropdown-bottom dropdown-end">
+              <div className="dropdown dropdown-end dropdown-bottom">
                 {/* <div tabIndex={0} role="button"> */}
                 <button
-                  className="btn btn-ghost btn-circle"
+                  className="btn btn-circle btn-ghost"
                   onClick={showNotification}
                 >
                   <div className="indicator">
@@ -296,7 +296,7 @@ const Header = () => {
                       />
                     </svg>
                     {news ? (
-                      <span className="badge badge-xs badge-primary indicator-item"></span>
+                      <span className="badge indicator-item badge-primary badge-xs"></span>
                     ) : (
                       ''
                     )}
@@ -308,7 +308,7 @@ const Header = () => {
                 {/* 24.03.14 메모. Link 누르면 클릭 배경색 고정되는 것(로그인 모달도 동일)*/}
                 <ul
                   tabIndex={0}
-                  className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-80"
+                  className="menu dropdown-content z-[1] w-80 rounded-box bg-base-100 p-2 shadow"
                 >
                   {/* 24.03.14 메모. data fetch로 새 알림을 map 으로 생성해야 할듯 */}
                   <li>

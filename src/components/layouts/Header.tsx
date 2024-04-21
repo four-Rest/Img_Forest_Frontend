@@ -12,6 +12,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../App.css';
 import { toastNotice } from '../toastr/ToastrConfig';
+import LoginModal from '../modal/LoginModal';
+import SignupModal from '../modal/SignupModal';
+import {
+  useShowLoginModal,
+  useShowSingUpModal,
+} from '../../store/display/displayState';
 
 const Header = () => {
   const [searchTag, setSearchTag] = useState('');
@@ -23,8 +29,8 @@ const Header = () => {
   const [userNick, setUserNick] = useState('');
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
-  const [showLoginModal, setShowLoginModal] = useState(false); //로그인을 위한 변수
-  const [showSignupModal, setShowSignupModal] = useState(false); //회원가입을 위한 변수
+  const { showLoginModal, setShowLoginModal } = useShowLoginModal();
+  const { showSignUpModal, setShowSignupModal } = useShowSingUpModal();
   const [showModifyModal, setShowModifyModal] = useState(false); // 회원정보수정을 위한 변수
   const searchRef = useRef(null); // 입력 필드에 대한 참조
   const navigate = useNavigate();
@@ -43,8 +49,9 @@ const Header = () => {
   };
 
   const handleShowSignupModal = () => {
-    setShowSignupModal(true);
     setShowLoginModal(false); // 로그인 모달이 열려있을 수 있으므로 닫는다
+
+    setShowSignupModal(true);
   };
 
   const handleButtonClick = () => {
@@ -325,6 +332,8 @@ const Header = () => {
           )}
         </div>
       </div>
+      <LoginModal />
+      <SignupModal />
       {/* <LoginModal showModal={showLoginModal} setShowModal={setShowLoginModal} />
       <SignupModal
         showModal={showSignupModal}

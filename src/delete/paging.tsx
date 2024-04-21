@@ -1,9 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import DetailModal from "../components/modal/DetailModal";
-import "../styles/styles.css";
-import { IdDetailContext } from "./IdDetailContext";
-
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import DetailModal from '../components/modal/DetailModal';
+import '../styles/styles.css';
+import { IdDetailContext } from './IdDetailContext';
+import { useIdDetail } from '../store/globalState';
 function Paging({
   articledata,
   parentLoading,
@@ -13,7 +13,8 @@ function Paging({
   hasParams,
 }: any) {
   const [idDetail, setIdDetail] = useState(0);
-  const { updateIdDetail } = useContext(IdDetailContext);
+  // const { updateIdDetail } = useContext(IdDetailContext);
+  const { updateIdDetail } = useIdDetail();
   const [pageNo, setPageNo] = useState(pageno);
   const [totalPages, setTotalPages] = useState(totalpages);
   const [showDetailModal, setShowDetailModal] = useState(false); // 상세보기를 위한 변수
@@ -22,13 +23,13 @@ function Paging({
   const [pageSize, setPageSize] = useState(pagesize);
   const apiBaseUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const { userNick } = useParams();
-  let urlParam = "";
-  let dataFilter = "";
+  let urlParam = '';
+  let dataFilter = '';
 
   const target = useRef(null);
   const handleImageClick = (id: any) => {
     setIdDetail(id);
-    updateIdDetail({ id: id });
+    updateIdDetail(id);
     setShowDetailModal(true);
     console.log(id);
   };
@@ -40,7 +41,7 @@ function Paging({
           setPageNo((prevPageNo: any) => prevPageNo + 1);
         }
       },
-      { threshold: 0 }
+      { threshold: 0 },
     );
 
     if (!loading && target.current) {
@@ -61,37 +62,34 @@ function Paging({
     urlParam = `&pageSize=${pageSize}`;
     dataFilter = `data`;
   }
-  useEffect(
-    () => {
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch(
-            `/api/article/page?pageNo=${pageNo}${urlParam}`
-          );
-          const data = await res.json();
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/article/page?pageNo=${pageNo}${urlParam}`,
+        );
+        const data = await res.json();
 
-          //   console.log(`data.data.content`, data.data.content);
-          setArticleData((prevData: any) => {
-            const newData = data.dataFilter.filter(
-              (newArticle: any) =>
-                !prevData.some(
-                  (prevArticle: any) => prevArticle.id === newArticle.id
-                )
-            );
-            return [...prevData, ...newData];
-          });
-          setTotalPages(data.totalPages);
-        } catch (error) {
-          console.log(`dataFilter: `, dataFilter);
-          console.log("Error fetching data", error);
-        }
-        setLoading(false);
-      };
-      fetchData();
-    },
-    [apiBaseUrl, pageNo, pageSize],
-  );
+        //   console.log(`data.data.content`, data.data.content);
+        setArticleData((prevData: any) => {
+          const newData = data.dataFilter.filter(
+            (newArticle: any) =>
+              !prevData.some(
+                (prevArticle: any) => prevArticle.id === newArticle.id,
+              ),
+          );
+          return [...prevData, ...newData];
+        });
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.log(`dataFilter: `, dataFilter);
+        console.log('Error fetching data', error);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [apiBaseUrl, pageNo, pageSize]);
 
   return articleData.length !== 0 ? (
     <div className="container pt-24">

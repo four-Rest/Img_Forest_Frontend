@@ -1,74 +1,51 @@
-import {
-  faComment
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
-import { toastNotice, toastWarning } from "../toastr/ToastrConfig";
-const SignupModal = ({ showModal, setShowModal }: any) => {
-  const [username, setUsername] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [email, setEmail] = useState("");
-  const [nickname, setNickname] = useState("");
+import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSignUp } from '../../api/reactQuery/signUpQuery';
+import { useShowSingUpModal } from '../../store/display/displayState';
+import { toastWarning } from '../../components/toastr/ToastrConfig';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
+const schema = z.object({
+  username: z.string(),
+  password1: z.string(),
+  password2: z.string(),
+  email: z.string().email(),
+  nickname: z.string(),
+});
+type SignUpUserData = z.infer<typeof schema>;
+const SignupModal = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpUserData>();
+  const onSubmit: SubmitHandler<SignUpUserData> = (data) => {
+    console.log(data);
+    if (!blankCheck(data)) {
+      toastWarning('필수 정보를 모두 입력해주세요.');
+      return;
+    }
+    if (data.password1 !== data.password2) {
+      return toastWarning('비밀번호가 일치하지 않습니다.');
+    } else {
+      signUp.mutate(data);
+    }
+  };
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
+  const { showSignUpModal, setShowSignupModal } = useShowSingUpModal();
 
-  const signupData = {
-    username,
-    password1,
-    password2,
-    email,
-    nickname,
-  };
-  const handleSignup: any = async (e: MouseEvent) => {
-    e.preventDefault();
-
-    if (!passwordCheck()) {
-      toastWarning("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-    if (!blankCheck()) {
-      toastWarning("필수 정보를 모두 입력해주세요.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}/api/member/signup`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(signupData),
-      });
-
-      if (response.ok) {
-        setShowModal(false); // 회원가입 성공 후 모달 닫기
-        toastNotice("회원가입 완료.");
-      } else {
-        // 서버 에러 처리
-        const errorData = await response.json();
-        toastWarning("중복된 이름입니다.");
-      }
-    } catch (error) {
-      console.error("Signup Error:", error);
-    }
-  };
-
-  function passwordCheck() {
-    return password1 === password2;
-  }
-
-  function blankCheck() {
+  const signUp = useSignUp();
+  function blankCheck(data: SignUpUserData) {
     return (
-      username.trim() &&
-      password1.trim() &&
-      password2.trim() &&
-      email.trim() &&
-      nickname.trim()
+      data.username &&
+      data.password1 &&
+      data.password2 &&
+      data.email &&
+      data.nickname
     );
   }
 
-  if (!showModal) return null;
+  if (!showSignUpModal) return null;
 
   const handleKakaoLogin = () => {
     const kakaoLoginUrl = `${apiUrl}/oauth2/authorization/kakao`;
@@ -79,23 +56,23 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
 
   return (
     <>
-      <button className="btn" onClick={() => setShowModal(true)}>
+      <button className="btn" onClick={() => setShowSignupModal(true)}>
         회원가입
       </button>
 
-      {showModal && (
+      {showSignUpModal && (
         <div className="modal modal-open">
           <div className="modal-box">
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <label
                 htmlFor="login-modal"
                 className="btn btn-sm btn-circle absolute right-2 top-2"
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowSignupModal(false)}
               >
                 ✕
               </label>
               <h3 className="font-bold text-3xl text-center mb-4">회원가입</h3>
-              <div className="form-control w-full mb-4 flex flex-col items-center">
+              <div className="form-control w-full  flex flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">ID</span>
                 </label>
@@ -103,11 +80,10 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  {...register('username', {})}
                 />
               </div>
-              <div className="form-control w-full mb-4 flex flex-col items-center">
+              <div className="form-control w-full  flex flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">비밀번호</span>
                 </label>
@@ -115,11 +91,10 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="password"
                   placeholder="비밀번호를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={password1}
-                  onChange={(e) => setPassword1(e.target.value)}
+                  {...register('password1')}
                 />
               </div>
-              <div className="form-control w-full mb-4 flex flex-col items-center">
+              <div className="form-control w-full  flex flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">비밀번호 확인</span>
                 </label>
@@ -127,11 +102,10 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="password"
                   placeholder="비밀번호를 확인해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={password2}
-                  onChange={(e) => setPassword2(e.target.value)}
+                  {...register('password2')}
                 />
               </div>
-              <div className="form-control w-full mb-4 flex flex-col items-center">
+              <div className="form-control w-full  flex flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">이메일</span>
                 </label>
@@ -139,11 +113,10 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="email"
                   placeholder="이메일를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register('email')}
                 />
               </div>
-              <div className="form-control w-full mb-4 flex flex-col items-center">
+              <div className="form-control w-full flex flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">닉네임</span>
                 </label>
@@ -151,8 +124,7 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                   type="text"
                   placeholder="닉네임을 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
+                  {...register('nickname')}
                 />
               </div>
 
@@ -160,7 +132,6 @@ const SignupModal = ({ showModal, setShowModal }: any) => {
                 <button
                   type="submit"
                   className="btn btn-outline w-full max-w-xs"
-                  onClick={handleSignup}
                 >
                   회원가입
                 </button>

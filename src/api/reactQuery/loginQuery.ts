@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { useLoginState } from '../../store/auth/loginState';
 import { useShowLoginModal } from '../../store/display/displayState';
+import { useLoginState } from '../../store/auth/loginState';
 
 import {
   toastNotice,

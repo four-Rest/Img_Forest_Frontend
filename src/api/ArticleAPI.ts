@@ -54,8 +54,96 @@ const createDeleteLikeArticle = ({
   });
 };
 
+const createArticle = () => {
+  const mutationFn = async({
+    content, tagString, multipartFile, price, paid
+  }: {
+      content: string;
+      tagString: string;
+      multipartFile: File | undefined;
+      price: number;
+      paid: boolean;
+    }
+  ) => {
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('tagString', tagString);
+    formData.append('multipartFile', multipartFile!);
+    formData.append('price', price.toString());
+    formData.append('paid', paid.toString());
+    const response = await fetch(`${apiUrl}/api/article`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+    return response.json();
+  };
+
+  return useMutation({
+    mutationFn,
+    // onMutate: (variables) => {},
+    // onError: (error, variables, context) => {},
+    onSuccess: (data) => {
+      history.back();
+      const id = data.data;
+      window.location.href = `/article/detail/${id}`;
+      return data;
+    },
+    // onSettled: (data, error, variables, context) => {},
+  });
+};
+
+const updateArticle = () => {
+  const { id } = useParams();
+  const mutationFn = async ({
+    content,
+    tagString,
+    multipartFile,
+    price,
+    paid,
+  }: {
+    content: string;
+    tagString: string;
+    multipartFile: File | undefined;
+    price: number;
+    paid: boolean;
+  }) => {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (tagString.length > 0) {
+      formData.append('tagString', tagString);
+    }
+    if (multipartFile != undefined) {
+      formData.append('multipartFile', multipartFile!);
+    }
+    formData.append('price', price.toString());
+    formData.append('paid', paid.toString());
+    const response = await fetch(`${apiUrl}/api/article/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    });
+
+    return response.json();
+  };
+
+  return useMutation({
+    mutationFn,
+    // onMutate: (variables) => {},
+    // onError: (error, variables, context) => {},
+    onSuccess: (data, variables, context) => {
+      // history.back();
+      return data;
+    },
+    // onSettled: (data, error, variables, context) => {},
+  });
+};
+
+
 const ArticleAPI = {
   readArticle,
   createDeleteLikeArticle,
+  createArticle,
+  updateArticle,
 };
 export default ArticleAPI;

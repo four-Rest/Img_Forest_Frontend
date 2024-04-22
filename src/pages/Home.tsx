@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Masonry from 'react-masonry-css';
-import Paging from '../delete/paging';
 import { useQuery } from '@tanstack/react-query';
-
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import '../styles/styles.css';
 type ArticleData = {
   id: string;
   imgFileName: string;
@@ -68,16 +67,19 @@ const Home = () => {
 
   return (
     <div>
-      <div className="container">
-        {articleData.slice(startIndex, endIndex).map((article) => (
-          <div key={article.id} className="box">
-            <img
-              src={`${apiBaseUrl}/${article.imgFilePath}/${article.imgFileName}`}
-              alt={``}
-            />
-          </div>
-        ))}
-      </div>
+      <ResponsiveMasonry columnsCountBreakPoints={{ 480: 1, 768: 2, 1200: 3 }}>
+        <Masonry gutter="20px">
+          {articleData.slice(startIndex, endIndex).map((article) => (
+            <div key={article.id} className="box">
+              <img
+                className="rounded-2xl"
+                src={`${apiBaseUrl}/${article.imgFilePath}/${article.imgFileName}`}
+                alt={``}
+              />
+            </div>
+          ))}
+        </Masonry>
+      </ResponsiveMasonry>
       <div ref={target}></div>
     </div>
   );

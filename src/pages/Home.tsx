@@ -1,42 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useImageData } from '../api/reactQuery/imageDataQuery';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
-import '../styles/styles.css';
-type ArticleData = {
-  id: string;
-  imgFileName: string;
-
-  imgFilePath: string;
-  likes: number;
-  paid: boolean;
-};
 
 const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const target = useRef<HTMLDivElement>(null);
-  const [articleData, setArticleData] = useState<ArticleData[]>([]);
-  const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [startIndex, setStartIndex] = useState(0); // 표시할 이미지의 시작 인덱스
   const [endIndex, setEndIndex] = useState(10); // 표시할 이미지의 마지막 인덱스
   const apiBaseUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
-  const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ['imageData'],
-    queryFn: async () => {
-      const res = await fetch(`${apiUrl}/api/article`); // API에서 이미지 데이터를 가져옴
-      const data = await res.json(); // 응답 데이터를 JSON 형식으로 변환
-
-      //데이터의 길이를 받아와 준다.?여기선안해도될듯
-      setArticleData(data.data.content); // 기존 이미지 데이터에 새로운 데이터를 추가 일케하면 계속생기네?
-      console.log(data.data.totalElements); // 이걸 안넘게하면되나?
-      console.log('데이터 개수:', articleData);
-      return data;
-    },
-  });
+  const { isPending, data, articleData } = useImageData();
 
   useEffect(() => {
     if (!isPending && target.current) {
@@ -78,9 +54,9 @@ const Home = () => {
               />
             </div>
           ))}
+          <div ref={target}></div>
         </Masonry>
       </ResponsiveMasonry>
-      <div ref={target}></div>
     </div>
   );
 };

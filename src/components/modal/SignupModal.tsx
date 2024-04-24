@@ -66,13 +66,13 @@ const SignupModal = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <label
                 htmlFor="login-modal"
-                className="btn btn-sm btn-circle absolute right-2 top-2"
+                className="btn btn-circle btn-sm absolute right-2 top-2"
                 onClick={() => setShowSignupModal(false)}
               >
                 ✕
               </label>
-              <h3 className="font-bold text-3xl text-center mb-4">회원가입</h3>
-              <div className="form-control w-full  flex flex-col items-center">
+              <h3 className="mb-4 text-center text-3xl font-bold">회원가입</h3>
+              <div className="form-control flex  w-full flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">ID</span>
                 </label>
@@ -80,10 +80,10 @@ const SignupModal = () => {
                   type="text"
                   placeholder="ID를 입력해주세요."
                   className="input input-bordered w-full max-w-md"
-                  {...register('username', {})}
+                  {...register('username')}
                 />
               </div>
-              <div className="form-control w-full  flex flex-col items-center">
+              <div className="form-control flex  w-full flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">비밀번호</span>
                 </label>
@@ -94,7 +94,7 @@ const SignupModal = () => {
                   {...register('password1')}
                 />
               </div>
-              <div className="form-control w-full  flex flex-col items-center">
+              <div className="form-control flex  w-full flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">비밀번호 확인</span>
                 </label>
@@ -105,7 +105,7 @@ const SignupModal = () => {
                   {...register('password2')}
                 />
               </div>
-              <div className="form-control w-full  flex flex-col items-center">
+              <div className="form-control flex  w-full flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">이메일</span>
                 </label>
@@ -116,7 +116,7 @@ const SignupModal = () => {
                   {...register('email')}
                 />
               </div>
-              <div className="form-control w-full flex flex-col items-center">
+              <div className="form-control flex w-full flex-col items-center">
                 <label className="label w-full max-w-md">
                   <span className="label-text">닉네임</span>
                 </label>
@@ -128,7 +128,7 @@ const SignupModal = () => {
                 />
               </div>
 
-              <div className="modal-action flex justify-center w-full">
+              <div className="modal-action flex w-full justify-center">
                 <button
                   type="submit"
                   className="btn btn-outline w-full max-w-xs"
@@ -136,7 +136,7 @@ const SignupModal = () => {
                   회원가입
                 </button>
               </div>
-              <div className="modal-action flex justify-center w-full">
+              <div className="modal-action flex w-full justify-center">
                 <button
                   type="button"
                   className="btn btn-warning w-full max-w-xs"

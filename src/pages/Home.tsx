@@ -26,7 +26,7 @@ const Home = () => {
       setEndIndex((prev) => Math.min(prev + 10, data.data.totalElements));
 
       if (endIndex === data.data.totalElements) {
-        // 현재 토탈데이터가 45로 되어있어 마지막이미지 문구가 출력되지 않음
+        // 현재 토탈데이터가 45로 되어있어 "마지막 이미지입니다" 문구가 출력되지 않음
         refetch();
         setMorePhto(false);
         return;

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Masonry from 'react-masonry-css';
+import { Link } from 'react-router-dom';
 import { useImageData } from '../api/reactQuery/imageDataQuery';
 import SearchBar from '../components/modules/SearchBar';
 
@@ -40,7 +41,8 @@ const Home = () => {
     <div>
       <SearchBar />
       <InfiniteScroll
-        dataLength={articleData.slice(startIndex, endIndex).length} //This is important field to render the next data
+        // dataLength={data?.data.slice(startIndex, endIndex).length} //This is important field to render the next data
+        dataLength={10} //This is important field to render the next data
         next={fetchData}
         hasMore={morePhoto}
         loader={<h4 className="flex justify-center">Loading...</h4>}
@@ -53,13 +55,15 @@ const Home = () => {
           className="my-masonry-grid flex gap-3"
           columnClassName="my-masonry-grid_column"
         >
-          {articleData.map((article) => (
-            <div key={article.id} className="box mb-3">
-              <img
-                className="rounded-2xl"
-                src={`${apiBaseUrl}/${article.imgFilePath}/${article.imgFileName}`}
-                alt={``}
-              />
+          {data?.data.map((article: any) => (
+            <div className="box mb-3" key={article.id}>
+              <Link to={`/article/detail/${article.id}`}>
+                <img
+                  className="rounded-2xl"
+                  src={`${apiBaseUrl}/${article.imgFilePath}/${article.imgFileName}`}
+                  alt={``}
+                />
+              </Link>
             </div>
           ))}
         </Masonry>

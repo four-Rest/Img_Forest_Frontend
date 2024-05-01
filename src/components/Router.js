@@ -1,15 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Header from "./layouts/Header";
-import Footer from "./layouts/Footer";
+import MyLikeList from "../pages/MyLikeList";
 import Article from "./contents/Article";
 import ArticleTag from "./contents/ArticleTag";
-import CheckSocialLogin from "../api/CheckSocialLogin";
-import HomePaging from "./contents/HomePaging";
 import Detail from "./contents/Detail";
-import { SearchTagProvider } from "../api/SearchTagContext";
-import { IdDetailProvider } from "../api/IdDetailContext";
-import MyArticle from "./contents/MyArticle";
+import HomePaging from "./contents/HomePaging";
 import Modify from "./contents/Modify";
+import MyArticle from "./contents/MyArticle";
+import Footer from "./layouts/Footer";
+import Header from "./layouts/Header";
 import Payment from "./layouts/Payment";
 function Router() {
   return (
@@ -24,6 +22,7 @@ function Router() {
           <Route path="/article/:tagString" element={<ArticleTag />} />
           <Route path="/myarticle/:userNick" element={<MyArticle />} />
           <Route path="/detail/:id" element={<Detail />} />
+          <Route path="/mypage/likelist" element={<MyLikeList />} />
           {/* <Route path="/check-social-login" element={<CheckSocialLogin />} /> */}
         </Routes>
         <Footer />

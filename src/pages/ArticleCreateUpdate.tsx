@@ -119,7 +119,7 @@ const ArticleCreateUpdate = (props: {edit?: boolean}) => {
   }, []);
 
   return (
-    <div className={'max-w-240 flex w-auto flex-col items-center gap-5 p-2'}>
+    <div className={'max-w-240 flex w-auto flex-col items-center gap-5 p-4'}>
       <div
         className={`${isDragging && 'bg-[#219653] bg-opacity-60'} outline-black-[1px] relative flex flex-col justify-center rounded-lg p-2 outline outline-1 outline-offset-[-1px] ${isPaid ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       >
@@ -134,7 +134,7 @@ const ArticleCreateUpdate = (props: {edit?: boolean}) => {
         )}
         <label
           htmlFor={'image-upload'}
-          className={`flex h-[25rem] w-[25rem] flex-row items-center justify-center ${isPaid ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+          className={`flex max-h-[25rem] max-w-[25rem] flex-row items-center justify-center ${isPaid ? 'cursor-not-allowed' : 'cursor-pointer'} aspect-square w-[calc(100vw-2rem)]`}
           onDragEnter={(e) => isPaid || onDragEnter(e)}
           onDragLeave={(e) => isPaid || onDragLeave(e)}
           onDragOver={(e) => isPaid || onDragOver(e)}

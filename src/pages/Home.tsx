@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { useImageData } from '../api/reactQuery/imageDataQuery';
-import Masonry from 'react-masonry-css';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Masonry from 'react-masonry-css';
+import { useImageData } from '../api/reactQuery/imageDataQuery';
 import SearchBar from '../components/modules/SearchBar';
 
 const Home = () => {

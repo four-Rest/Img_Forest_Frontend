@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import cookie from 'react-cookies';
-const AuthContext = createContext<any>(null!);
+const AuthContext = createContext<any>(null);
 
 export const useAuth = () => useContext(AuthContext);
 

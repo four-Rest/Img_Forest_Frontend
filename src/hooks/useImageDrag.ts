@@ -38,7 +38,7 @@ export const useImageDrag = () => {
   };
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files![0];
+    const file = (event.target.files as any)[0];
     if (!file) {
       alert('파일이 없습니다!');
       return;

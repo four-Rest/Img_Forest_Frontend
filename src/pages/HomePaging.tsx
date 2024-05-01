@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../delete/AuthContext";
-import Paging from "../delete/paging";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../delete/AuthContext';
+import Paging from '../delete/paging';
 
 function HomePaging() {
   const navigate = useNavigate();
@@ -23,28 +23,28 @@ function HomePaging() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    if (searchParams.has("check-social-login")) {
+    if (searchParams.has('check-social-login')) {
       // 서버에 accessToken 검증 요청
       fetch(`${apiUrl}/api/member/checkAccessToken`, {
-        method: "POST",
-        credentials: "include",
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       })
         .then((response) => response.json())
         .then((data) => {
           // 서버 응답에서 resultCode와 LoginResponseDto 정보를 확인
-          if (data.resultCode === "200") {
+          if (data.resultCode === '200') {
             // 로그인 성공 처리
             login();
-            console.log("로그인 성공");
-            localStorage.setItem("username", data.data.username); // 응답에서 username 추출
-            localStorage.setItem("isLogin", "true");
+            console.log('로그인 성공');
+            localStorage.setItem('username', data.data.username); // 응답에서 username 추출
+            localStorage.setItem('isLogin', 'true');
 
             const url = new URL(window.location as any);
-            url.searchParams.delete("check-social-login");
-            window.history.replaceState({}, "", url);
+            url.searchParams.delete('check-social-login');
+            window.history.replaceState({}, '', url);
           } else {
             // 로그인 실패 처리 (유효하지 않은 토큰, 토큰 만료 등)
             console.log(data.message); // 서버에서 보낸 오류 메시지 출력
@@ -52,7 +52,7 @@ function HomePaging() {
           }
         })
         .catch((error) => {
-          console.error("에러 발생:", error);
+          console.error('에러 발생:', error);
           logout(); // 네트워크 오류 등의 이유로 로그아웃 처리
         });
     }

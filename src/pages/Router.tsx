@@ -18,7 +18,7 @@ function Router() {
       <ErrorBoundary fallback={<p>⚠️Something went wrong</p>}>
         <BrowserRouter>
           <Header />
-          <main className={'m-auto max-w-[1440px] pt-16'}>
+          <main className={'m-auto max-w-[1440px] pt-10'}>
             <Routes>
               <Route path="/" element={<Home />} />
               {/* <Route path="/" element={<HomePaging />} /> */}

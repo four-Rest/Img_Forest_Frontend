@@ -54,11 +54,6 @@ const Header = () => {
     setShowSignupModal(true);
   };
 
-  const handleButtonClick = () => {
-    setIconVisible(false);
-    setSearchVisible(true);
-  };
-
   const handleInputChange = (e: any) => {
     setSearchTag(e.target.value);
   };
@@ -231,41 +226,6 @@ const Header = () => {
           </Link>
         </div>
         <div className="navbar-end">
-          {/* 검색버튼 있는곳  */}
-
-          {!searchVisible && (
-            <button
-              className="btn btn-circle btn-ghost"
-              onClick={handleButtonClick}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          )}
-          {searchVisible && (
-            <div className="search-wrapper" ref={searchRef}>
-              <input
-                type="text"
-                placeholder="Type here"
-                className="w-170 input input-bordered max-w-xs"
-                value={searchTag}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
-          )}
           {/* 24.03.14 메모. 알림 버튼은 추후 isLogin을 해야지만 보이도록 설정. 
            현재 개발단계로 isLogin이 false 일 때 보이게 함.*/}
           {/* 24.03.14 메모. open or close를 위한

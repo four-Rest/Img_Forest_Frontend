@@ -7,9 +7,11 @@ import ArticleCreateUpdate from './ArticleCreateUpdate';
 import ArticleDetail from './ArticleDetail';
 import ArticleTag from './ArticleTag';
 import Home from './Home';
-import MyArticles from './MyArticles';
-import MyLikeList from './MyLikeList';
 import Payment from './Payment';
+import MyArticles from './mypage/MyArticles';
+import MyBuyList from './mypage/MyBuyList';
+import MyPersonelInformation from './mypage/MyPersonelInformation';
+import MySellList from './mypage/MySellList';
 
 function Router() {
   return (
@@ -31,7 +33,10 @@ function Router() {
               <Route path="/article/:tagString" element={<ArticleTag />} />
               <Route path="/myarticles/:userNick" element={<MyArticles />} />
               <Route path="/article/detail/:id" element={<ArticleDetail />} />
-              <Route path="/mypage/likelist" element={<MyLikeList />} />
+              <Route path="/mypage/" element={<MyPersonelInformation />} />
+              {/* <Route path="/mypage/like-list" element={<MyLikeList />} /> */}
+              <Route path="/mypage/buy-list" element={<MyBuyList />} />
+              <Route path="/mypage/sell-list" element={<MySellList />} />
               {/* <Route path="/check-social-login" element={<CheckSocialLogin />} /> */}
             </Routes>
           </main>

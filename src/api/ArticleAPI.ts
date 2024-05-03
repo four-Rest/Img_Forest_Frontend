@@ -7,10 +7,8 @@
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import TempAuth from './tempAuth';
 const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 const readArticle = () => {
-  TempAuth();
   const { id } = useParams();
   const result = useQuery({
     queryKey: ['readArticle', id],
@@ -68,7 +66,7 @@ const createArticle = () => {
     const formData = new FormData();
     formData.append('content', content);
     formData.append('tagString', tagString);
-    formData.append('multipartFile', multipartFile!);
+    formData.append('multipartFile', multipartFile as File);
     formData.append('price', price.toString());
     formData.append('paid', paid.toString());
     const response = await fetch(`${apiUrl}/api/article`, {
@@ -114,7 +112,7 @@ const updateArticle = () => {
       formData.append('tagString', tagString);
     }
     if (multipartFile != undefined) {
-      formData.append('multipartFile', multipartFile!);
+      formData.append('multipartFile', multipartFile as File);
     }
     formData.append('price', price.toString());
     formData.append('paid', paid.toString());

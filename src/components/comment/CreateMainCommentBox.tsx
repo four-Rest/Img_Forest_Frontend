@@ -20,9 +20,9 @@ const CreateMainCommentBox = (props: ICommentType) => {
   const { username } = useLoginState();
   const createCommentHandler = () => {
     createCommentMutation.mutate({
-      articleId: props.articleId!,
+      articleId: props.articleId as number,
       username: username,
-      content: textRef.current!.value,
+      content: ((textRef.current) as any).value,
     });
   };
 

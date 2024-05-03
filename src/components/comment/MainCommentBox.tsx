@@ -42,7 +42,7 @@ const MainCommentBox = (props: MainCommentBoxType) => {
   );
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [isModifyStatus, isModifyStatusToggle] = useReducer((state) => {
-    if (state) textRef.current!.value = props.content;
+    if (state) (textRef.current as any).value = props.content;
     return !state;
   }, false);
 
@@ -50,15 +50,15 @@ const MainCommentBox = (props: MainCommentBoxType) => {
   const deleteCommentMutation = CommentAPI.deleteMainComment();
   const updateCommentHandler = () => {
     updateCommentMutation.mutate({
-      articleId: props.articleId!,
+      articleId: props.articleId as number,
       username: username,
-      content: textRef.current!.value,
+      content: (textRef.current as any).value,
       commentId: props.id,
     });
   };
   const deleteCommentHandler = () => {
     deleteCommentMutation.mutate({
-      articleId: props.articleId!,
+      articleId: props.articleId as number,
       username: username,
       commentId: props.id,
     });

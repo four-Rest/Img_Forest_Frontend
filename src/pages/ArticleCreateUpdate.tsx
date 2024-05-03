@@ -56,18 +56,18 @@ const ArticleCreateUpdate = (props: {edit?: boolean}) => {
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === 'Enter') {
-      const tempTag = inputTagRef.current!.value + '';
+      const tempTag = (inputTagRef.current as any).value + '';
       if (tempTag == '') return;
       setTags((prev) => Array.from(new Set([...prev, tempTag])));
-      inputTagRef.current!.value = '';
+      (inputTagRef.current as any).value = '';
     }
     else if (e.key === ',') {
       const tempTag =
-        inputTagRef.current!.value.substring(0, inputTagRef.current!.value.length-1) +
+        (inputTagRef.current as any).value.substring(0, (inputTagRef.current as any).value.length-1) +
         '';
       if (tempTag == '') return;
       setTags((prev) => Array.from(new Set([...prev, tempTag])));
-      inputTagRef.current!.value = '';
+      (inputTagRef.current as any).value = '';
     }
   };
 

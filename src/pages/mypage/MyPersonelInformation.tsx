@@ -15,6 +15,7 @@ const MyPersonelInformation = () => {
     nickname?: string;
     password1?: string;
     password2?: string;
+    email?: string;
   }) => {
     updatePersonnelMutation.mutate({
       ...data,
@@ -71,6 +72,7 @@ const MyPersonelInformation = () => {
               <input
                 defaultValue={data?.data?.email}
                 type={'email'}
+                {...register('email')}
                 placeholder={'이메일을 입력해주세요'}
                 className={
                   'rounded-md bg-[#f3f3f3] px-[0.5rem] py-[0.8rem] shadow-inner'

@@ -22,7 +22,7 @@ type SubCommentBoxType = {
 const SubCommentBox = (props: SubCommentBoxType) => {
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [isModifyStatus, isModifyStatusToggle] = useReducer((state) => {
-    if (state) textRef.current!.value = props.content;
+    if (state) (textRef.current as any).value = props.content;
     return !state;
   }, false);
   const { username } = useLoginState();
@@ -30,15 +30,15 @@ const SubCommentBox = (props: SubCommentBoxType) => {
   const deleteCommentMutation = CommentAPI.deleteSubComment();
   const updateCommentHandler = () => {
     updateCommentMutation.mutate({
-      username: username!,
-      content: textRef.current!.value,
+      username: username as string,
+      content: (textRef.current as any).value,
       replyId: props.id,
       commentId: props.parentCommentId,
     });
   };
   const deleteCommentHandler = () => {
     deleteCommentMutation.mutate({
-      username: username!,
+      username: username as string,
       replyId: props.id,
       commentId: props.parentCommentId,
     });

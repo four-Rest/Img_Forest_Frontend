@@ -83,7 +83,7 @@ const ArticleDetailContainer = (props: IArticleDetailType | any) => {
             onClick={likeHandler}
           >
             {isLike ? '❤️' : '🖤'}
-            {likes + (props.data.likeValue ? Number(isLike) - 1 : isLike)}
+            {likes + (likeValue ? Number(isLike) - 1 : isLike)}
           </button>
         </div>
       </div>

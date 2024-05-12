@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './styles.css';
+import { useEffect, useRef, useState } from "react";
+import "./styles.css";
 
 function Home() {
   const [articleData, setArticleData] = useState([]); // 이미지 데이터 배열
@@ -63,7 +63,7 @@ function Home() {
     <div className="container">
       {articleData.slice(startIndex, endIndex).map((article: any) => (
         <div key={article.id} className="box">
-          {/* <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} alt="" /> */}
+          {/* <img src={`${apiBaseUrl}/gen/${imgFilePath}/${imgFileName}`} altz="" /> */}
         </div>
       ))}
       <div ref={target}></div>

@@ -1,19 +1,16 @@
-import { useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import Masonry from 'react-masonry-css';
-import { Link } from 'react-router-dom';
-import { useImageData } from '../api/reactQuery/imageDataQuery';
+import { articleListData } from '../api/reactQuery/imageDataQuery';
 import SearchBar from '../components/modules/SearchBar';
+import useIntersection from '../hooks/useIntersection';
 
 const Home = () => {
-  const target = useRef<HTMLDivElement>(null);
-  const [totalPages, setTotalPages] = useState(0);
-  const [startIndex, setStartIndex] = useState(0); // 표시할 이미지의 시작 인덱스
-  const [endIndex, setEndIndex] = useState(0); // 표시할 이미지의 마지막 인덱스
-  const [morePhoto, setMorePhto] = useState(true);
   const apiBaseUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
 
-  const { isPending, data, articleData, refetch } = useImageData();
+  const infiniteScrollRef = useIntersection((entry, observer) => {
+    // ref를 감지할 경우 실행되는 로직작성
+    observer.unobserve(entry.target);
+    if (hasNextPage && !isFetching) fetchNextPage();
+  });
 
   const breackpoindtColumns = {
     default: 4,
@@ -22,52 +19,29 @@ const Home = () => {
     480: 1,
   };
 
-  const fetchData = () => {
-    setTimeout(() => {
-      setEndIndex((prev) => Math.min(prev + 10, data.data.totalElements));
-
-      if (endIndex === data.data.totalElements) {
-        // 현재 토탈데이터가 45로 되어있어 "마지막 이미지입니다" 문구가 출력되지 않음
-        refetch();
-        setMorePhto(false);
-        return;
-      }
-
-      setMorePhto(true);
-    }, 500);
-  };
+  const { data, fetchNextPage, hasNextPage, isFetching } = articleListData();
 
   return (
-    <div>
-      <SearchBar />
-      <InfiniteScroll
-        // dataLength={data?.data.slice(startIndex, endIndex).length} //This is important field to render the next data
-        dataLength={10} //This is important field to render the next data
-        next={fetchData}
-        hasMore={morePhoto}
-        loader={<h4 className="flex justify-center">Loading...</h4>}
-        endMessage={
-          <h4 className="flex justify-center">마지막 이미지입니다.</h4>
-        }
+    <div className="px-[1rem]">
+      <SearchBar articleDataCount={data?.pages[0]?.data.totalElements} />
+      <Masonry
+        breakpointCols={breackpoindtColumns}
+        className="my-masonry-grid flex gap-3"
+        columnClassName="my-masonry-grid_column"
       >
-        <Masonry
-          breakpointCols={breackpoindtColumns}
-          className="my-masonry-grid flex gap-3"
-          columnClassName="my-masonry-grid_column"
-        >
-          {data?.data.map((article: any) => (
-            <div className="box mb-3" key={article.id}>
-              <Link to={`/article/detail/${article.id}`}>
-                <img
-                  className="rounded-2xl"
-                  src={`${apiBaseUrl}/${article.imgFilePath}/${article.imgFileName}`}
-                  alt={``}
-                />
-              </Link>
+        {data?.pages.map((i) => {
+          return i.data.content.map((j: any) => (
+            <div key={j.id} className="box mb-3">
+              <img
+                className="rounded-2xl"
+                src={`${apiBaseUrl}/${j.imgFilePath}/${j.imgFileName}`}
+                alt={``}
+              />
             </div>
-          ))}
-        </Masonry>
-      </InfiniteScroll>
+          ));
+        })}
+      </Masonry>
+      <div ref={infiniteScrollRef}></div>
     </div>
   );
 };

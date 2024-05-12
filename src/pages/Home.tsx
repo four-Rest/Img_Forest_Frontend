@@ -1,4 +1,5 @@
 import Masonry from 'react-masonry-css';
+import { Link } from 'react-router-dom';
 import { articleListData } from '../api/reactQuery/imageDataQuery';
 import SearchBar from '../components/modules/SearchBar';
 import useIntersection from '../hooks/useIntersection';
@@ -31,13 +32,15 @@ const Home = () => {
       >
         {data?.pages.map((i) => {
           return i.data.content.map((j: any) => (
-            <div key={j.id} className="box mb-3">
-              <img
-                className="rounded-2xl"
-                src={`${apiBaseUrl}/${j.imgFilePath}/${j.imgFileName}`}
-                alt={``}
-              />
-            </div>
+            <Link key={j.id} to={`/article/detail/${j.id}`} className='cursor-pointer'>
+              <div className="box mb-3">
+                <img
+                  className="rounded-2xl"
+                  src={`${apiBaseUrl}/${j.imgFilePath}/${j.imgFileName}`}
+                  alt={``}
+                />
+              </div>
+            </Link>
           ));
         })}
       </Masonry>

@@ -12,6 +12,7 @@ interface ITextareaProps {
   ref?: any;
   disabled?: boolean;
   activeBg?: string;
+  className?: string;
 }
 
 const Textarea = (props: ITextareaProps, ref: any) => {
@@ -25,11 +26,12 @@ const Textarea = (props: ITextareaProps, ref: any) => {
 
   return (
     <textarea
-      className={`h-auto resize-none rounded-md border-0 ${props.disabled ? 'bg-transparent' : props.activeBg || 'bg-white'} !outline-none`}
+      className={`h-auto resize-none rounded-md border-0 ${props.disabled ? 'bg-transparent' : props.activeBg || 'bg-white'} !outline-none `+props.className}
       ref={textRef}
       rows={1}
       onInput={handleResizeHeight}
-      {...props}
+      placeholder={props.placeholder}
+      defaultValue={props.defaultValue}
     />
   );
 };

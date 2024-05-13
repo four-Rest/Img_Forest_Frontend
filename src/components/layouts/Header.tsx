@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../App.css';
 import { getMemberUsingToken } from '../../api/MemberAPI';
+import { useLogout } from '../../api/reactQuery/loginQuery';
 import { useLoginState } from '../../store/auth/loginState';
 import {
   useShowLoginModal,
@@ -35,9 +36,11 @@ const Header = () => {
   const [showModifyModal, setShowModifyModal] = useState(false); // 회원정보수정을 위한 변수
   const searchRef = useRef(null); // 입력 필드에 대한 참조
   const { loginState, nickname } = useLoginState();
-  const test = getMemberUsingToken();
+  const initLoginQuery = getMemberUsingToken();
+  const logoutQuery = useLogout();
 
   const logoutProcess = async () => {
+    logoutQuery.mutate();
     toastNotice('로그아웃 되었습니다.');
   };
 
@@ -58,7 +61,7 @@ const Header = () => {
   };
 
   useEffect(() => {
-    test.mutate();
+    initLoginQuery.mutate();
   },[])
 
   useEffect(() => {

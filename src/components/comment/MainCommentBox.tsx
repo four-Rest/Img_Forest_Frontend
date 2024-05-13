@@ -69,7 +69,7 @@ const MainCommentBox = (props: MainCommentBoxType) => {
     <div
       id={'main-comment'}
       className={
-        'flex flex-col gap-2 rounded-md p-2  outline outline-4 outline-offset-[-1px]'
+        'flex flex-col gap-2 rounded-md p-2'
       }
     >
       <div className={'flex flex-col gap-2 rounded-lg bg-orange-200 p-2'}>

@@ -35,10 +35,10 @@ type childCommentsType = {
 };
 
 const MainCommentBox = (props: MainCommentBoxType) => {
-  const { username } = useLoginState();
+  const { username, loginState } = useLoginState();
   const [isShowSubCommentList, IsShowSubCommentListToggle] = useReducer(
     (state) => !state,
-    false,
+    true,
   );
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [isModifyStatus, isModifyStatusToggle] = useReducer((state) => {
@@ -66,21 +66,16 @@ const MainCommentBox = (props: MainCommentBoxType) => {
 
   // TODO : username 로그인 사용자와 비교해서 닉네임 일치할 경우 변경해주기, 또한 수정,삭제도 불가능하게 변경하기
   return (
-    <div
-      id={'main-comment'}
-      className={
-        'flex flex-col gap-2 rounded-md p-2'
-      }
-    >
+    <div id={'main-comment'} className={'flex flex-col gap-2 rounded-md p-2'}>
       <div className={'flex flex-col gap-2 rounded-lg bg-orange-200 p-2'}>
         <div className={'flex items-center gap-4'}>
-          {/* 인증관련 수정 필요 */}
           <div className={'font-bold'}>{props.username}</div>
           <span className={'text-sm text-gray-400'}>
             {timeFunction.timeFromToday(new Date(props.createdDate))}
           </span>
         </div>
         <Textarea
+          className={'bg-white p-[0.5rem] '}
           ref={textRef}
           defaultValue={props.content}
           disabled={!isModifyStatus}
@@ -122,9 +117,20 @@ const MainCommentBox = (props: MainCommentBoxType) => {
       {isShowSubCommentList && (
         <div className={'flex flex-col gap-4'}>
           {props.childComments.map((j: childCommentsType) => (
-            <SubCommentBox key={j.id} {...j} parentCommentId={props.id} />
+            <SubCommentBox
+              key={j.id}
+              {...j}
+              writer={props.username}
+              parentCommentId={props.id}
+            />
           ))}
-          <CreateSubCommentBox commentId={props.id} />
+          {loginState ? (
+            <CreateSubCommentBox commentId={props.id} />
+          ) : (
+            <div className={'flex flex-col gap-2 rounded-lg bg-orange-300 p-2'}>
+              댓글 작성을 위해서는 로그인이 필요합니다.
+            </div>
+          )}
         </div>
       )}
     </div>

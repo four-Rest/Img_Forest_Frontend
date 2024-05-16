@@ -87,7 +87,6 @@ const createArticle = () => {
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
     onSuccess: (data) => {
-      console.log('ArticleAPI.ts 파일 : ', data);
       const id = data.data;
       history(`/article/detail/${id}`, { replace: true });
       return data;

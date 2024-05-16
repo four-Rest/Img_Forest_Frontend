@@ -6,11 +6,12 @@
  */
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
 const readArticle = () => {
   const { id } = useParams();
   const result = useQuery({
+    staleTime: 1,
     queryKey: ['readArticle', id],
     queryFn: async () => {
       const response = await fetch(`${apiUrl}/api/article/detail/${id}`, {
@@ -53,16 +54,20 @@ const createDeleteLikeArticle = ({
 };
 
 const createArticle = () => {
-  const mutationFn = async({
-    content, tagString, multipartFile, price, paid
+  const history = useNavigate();
+  const mutationFn = async ({
+    content,
+    tagString,
+    multipartFile,
+    price,
+    paid,
   }: {
-      content: string;
-      tagString: string;
-      multipartFile: File | undefined;
-      price: number;
-      paid: boolean;
-    }
-  ) => {
+    content: string;
+    tagString: string;
+    multipartFile: File | undefined;
+    price: number;
+    paid: boolean;
+  }) => {
     const formData = new FormData();
     formData.append('content', content);
     formData.append('tagString', tagString);
@@ -82,9 +87,8 @@ const createArticle = () => {
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
     onSuccess: (data) => {
-      history.back();
       const id = data.data;
-      window.location.href = `/article/detail/${id}`;
+      history(`/article/detail/${id}`, { replace: true });
       return data;
     },
     // onSettled: (data, error, variables, context) => {},
@@ -129,14 +133,17 @@ const updateArticle = () => {
     mutationFn,
     // onMutate: (variables) => {},
     // onError: (error, variables, context) => {},
+    retry: 1,
     onSuccess: (data, variables, context) => {
       // history.back();
       return data;
     },
     // onSettled: (data, error, variables, context) => {},
+    onError: () => {
+      alert('요청에 실패했습니다.');
+    },
   });
 };
-
 
 const ArticleAPI = {
   readArticle,

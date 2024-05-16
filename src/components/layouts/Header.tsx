@@ -150,7 +150,7 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to={`/article`}>
+                    <Link to={`/article/create`}>
                       <FontAwesomeIcon icon={faPen} /> 글 쓰기
                     </Link>
                   </li>

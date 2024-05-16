@@ -18,7 +18,7 @@ const getArticleData = async (pageParam = 1, keyword?: string | null) => {
 export const articleListData = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const keyword = params.get('search');
+  const keyword = params.get('tagName');
   return useInfiniteQuery({
     queryKey: ['articleListData', keyword],
     queryFn: ({ pageParam }) => getArticleData(pageParam, keyword),

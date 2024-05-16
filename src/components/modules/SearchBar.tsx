@@ -4,7 +4,7 @@ const SearchBar = ({ articleDataCount }: { articleDataCount?: number }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const keyword = params.get('search');
+  const keyword = params.get('tagName');
 
   const {
     register,
@@ -13,7 +13,7 @@ const SearchBar = ({ articleDataCount }: { articleDataCount?: number }) => {
     getValues,
   } = useForm<{ tagName: string }>();
   const onSubmit = (data: { tagName: string }) => {
-    navigate(`/?search=${data.tagName}`);
+    navigate(`/?tagName=${data.tagName}`);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mb-12 ">

@@ -13,7 +13,7 @@ const Home = () => {
     if (hasNextPage && !isFetching) fetchNextPage();
   });
 
-  const breackpoindtColumns = {
+  const breakpointColumns = {
     default: 4,
     1200: 3,
     768: 2,
@@ -26,7 +26,7 @@ const Home = () => {
     <div className="px-[1rem]">
       <SearchBar articleDataCount={data?.pages[0]?.data.totalElements} />
       <Masonry
-        breakpointCols={breackpoindtColumns}
+        breakpointCols={breakpointColumns}
         className="my-masonry-grid flex gap-3"
         columnClassName="my-masonry-grid_column"
       >

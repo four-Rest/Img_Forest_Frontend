@@ -4,8 +4,9 @@ import {
   faAddressCard,
   faDoorClosed,
   faDoorOpen,
+  faHome,
   faPen,
-  faRectangleList,
+  faRectangleList
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
@@ -99,8 +100,8 @@ const Header = () => {
         }}
       >
         <div className="navbar-start">
-          <div className="dropdown">
-            <div
+          <details className="dropdown">
+            <summary
               tabIndex={0}
               role="button"
               className="btn btn-circle btn-ghost"
@@ -118,16 +119,21 @@ const Header = () => {
                   d="M4 6h16M4 12h16M4 18h7"
                 />
               </svg>
-            </div>
+            </summary>
             <ul
               tabIndex={0}
-              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 drop-shadow-md shadow-inner"
             >
               {loginState ? (
                 <>
                   <li>
+                    <Link to="/" className="nav-link">
+                      <FontAwesomeIcon icon={faHome} /> 홈으로
+                    </Link>
+                  </li>
+                  <li>
                     <Link
-                      to=""
+                      to="/mypage"
                       className="nav-link"
                       onClick={() => {
                         setShowSignupModal(false);
@@ -135,14 +141,12 @@ const Header = () => {
                         setShowModifyModal(true);
                       }}
                     >
-                      <FontAwesomeIcon icon={faAddressCard} /> 내 정보 수정
+                      <FontAwesomeIcon icon={faAddressCard} /> 개인 정보 수정
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to={`/myarticle/${nickname !== null ? nickname : ''}`}
-                    >
-                      <FontAwesomeIcon icon={faRectangleList} /> 내 글 보기
+                    <Link to={`/mypage/sell-list`}>
+                      <FontAwesomeIcon icon={faRectangleList} /> 판매내역
                     </Link>
                   </li>
                   <li>
@@ -160,29 +164,24 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link
-                      to={``}
-                      className="nav-link"
-                      onClick={handleShowLoginModal}
-                    >
+                    <button className="nav-link" onClick={handleShowLoginModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       로그인
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link
-                      to={``}
+                    <button
                       className="nav-link"
                       onClick={handleShowSignupModal}
                     >
                       <FontAwesomeIcon icon={faDoorOpen} />
                       회원가입
-                    </Link>
+                    </button>
                   </li>
                 </>
               )}
             </ul>
-          </div>
+          </details>
         </div>
         <div className="navbar-center">
           <Link className="btn btn-ghost text-xl" to={`/`}>
@@ -190,14 +189,9 @@ const Header = () => {
           </Link>
         </div>
         <div className="navbar-end">
-          {/* 24.03.14 메모. 알림 버튼은 추후 isLogin을 해야지만 보이도록 설정. 
-           현재 개발단계로 isLogin이 false 일 때 보이게 함.*/}
-          {/* 24.03.14 메모. open or close를 위한
-          Dropdown menu using <details> tag 선택지는 잠시 보류 */}
           {loginState ? (
             <>
               <div className="dropdown dropdown-end dropdown-bottom">
-                {/* <div tabIndex={0} role="button"> */}
                 <button
                   className="btn btn-circle btn-ghost"
                   onClick={showNotification}
@@ -251,7 +245,9 @@ const Header = () => {
                 </ul>
               </div>
             </>
-          ): ''}
+          ) : (
+            ''
+          )}
         </div>
       </div>
       <LoginModal />

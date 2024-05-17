@@ -4,20 +4,24 @@ import {
   faAddressCard,
   faDoorClosed,
   faDoorOpen,
+  faHome,
   faPen,
-  faRectangleList,
+  faRectangleList
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../App.css';
-import { toastNotice } from '../toastr/ToastrConfig';
-import LoginModal from '../modal/LoginModal';
-import SignupModal from '../modal/SignupModal';
+import { getMemberUsingToken } from '../../api/MemberAPI';
+import { useLogout } from '../../api/reactQuery/loginQuery';
+import { useLoginState } from '../../store/auth/loginState';
 import {
   useShowLoginModal,
   useShowSingUpModal,
 } from '../../store/display/displayState';
+import LoginModal from '../modal/LoginModal';
+import SignupModal from '../modal/SignupModal';
+import { toastNotice } from '../toastr/ToastrConfig';
 
 const Header = () => {
   const [searchTag, setSearchTag] = useState('');
@@ -25,7 +29,6 @@ const Header = () => {
   /* 24.03.14 메모. news 기본값은 data fetch로 설정? */
   const testNewsValue = true; /* 24.03.14 메모. 테스트 임시 변수 */
   const [news, setNews] = useState(testNewsValue);
-  const [isLogin, setIsLogin] = useState(false);
   const [userNick, setUserNick] = useState('');
   const [iconVisible, setIconVisible] = useState(true); // 돋보기 svg를 위한 변수
   const [searchVisible, setSearchVisible] = useState(false); // 검색창
@@ -33,13 +36,12 @@ const Header = () => {
   const { showSignUpModal, setShowSignupModal } = useShowSingUpModal();
   const [showModifyModal, setShowModifyModal] = useState(false); // 회원정보수정을 위한 변수
   const searchRef = useRef(null); // 입력 필드에 대한 참조
-  const navigate = useNavigate();
-  const storedNick = localStorage.getItem('nickname');
-  // console.log(storedNick);
-  const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
-  const frontUrl = process.env.REACT_APP_CORE_FRONT_BASE_URL;
+  const { loginState, nickname } = useLoginState();
+  const initLoginQuery = getMemberUsingToken();
+  const logoutQuery = useLogout();
 
   const logoutProcess = async () => {
+    logoutQuery.mutate();
     toastNotice('로그아웃 되었습니다.');
   };
 
@@ -54,21 +56,14 @@ const Header = () => {
     setShowSignupModal(true);
   };
 
-  const handleInputChange = (e: any) => {
-    setSearchTag(e.target.value);
-  };
-
-  const handleKeyDown = (e: any) => {
-    if (e.key === 'Enter') {
-      navigate(`/article/${searchTag}`);
-    }
-  };
-
   const showNotification = () => {
-    console.log('showNotification');
     setNews(false);
     /* 24.03.14 메모. news 값을 계정별로 저장하는 방법? */
   };
+
+  useEffect(() => {
+    initLoginQuery.mutate();
+  },[])
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -89,36 +84,6 @@ const Header = () => {
     };
   }, [searchVisible]);
 
-  useEffect(() => {
-    if (localStorage.getItem('isLogin')) {
-      fetch(`${apiUrl}/api/member/checkAccessToken`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.resultCode === '200') {
-            console.log('유효!!!!');
-          } else {
-            console.log('유효하지 않은 토큰입니다.');
-          }
-        })
-        .catch((error) => {
-          console.error('에러 발생 :', error);
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    const storedNick = localStorage.getItem('nickname');
-    if (storedNick) {
-      setUserNick(storedNick);
-    }
-  }, []);
-
   return (
     <>
       <div
@@ -135,8 +100,8 @@ const Header = () => {
         }}
       >
         <div className="navbar-start">
-          <div className="dropdown">
-            <div
+          <details className="dropdown">
+            <summary
               tabIndex={0}
               role="button"
               className="btn btn-circle btn-ghost"
@@ -154,16 +119,21 @@ const Header = () => {
                   d="M4 6h16M4 12h16M4 18h7"
                 />
               </svg>
-            </div>
+            </summary>
             <ul
               tabIndex={0}
-              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
+              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 drop-shadow-md shadow-inner"
             >
-              {isLogin ? (
+              {loginState ? (
                 <>
                   <li>
+                    <Link to="/" className="nav-link">
+                      <FontAwesomeIcon icon={faHome} /> 홈으로
+                    </Link>
+                  </li>
+                  <li>
                     <Link
-                      to=""
+                      to="/mypage"
                       className="nav-link"
                       onClick={() => {
                         setShowSignupModal(false);
@@ -171,18 +141,16 @@ const Header = () => {
                         setShowModifyModal(true);
                       }}
                     >
-                      <FontAwesomeIcon icon={faAddressCard} /> 내 정보 수정
+                      <FontAwesomeIcon icon={faAddressCard} /> 개인 정보 수정
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to={`/myarticle/${storedNick !== null ? storedNick : ''}`}
-                    >
-                      <FontAwesomeIcon icon={faRectangleList} /> 내 글 보기
+                    <Link to={`/mypage/sell-list`}>
+                      <FontAwesomeIcon icon={faRectangleList} /> 판매내역
                     </Link>
                   </li>
                   <li>
-                    <Link to={`/article`}>
+                    <Link to={`/article/create`}>
                       <FontAwesomeIcon icon={faPen} /> 글 쓰기
                     </Link>
                   </li>
@@ -196,29 +164,24 @@ const Header = () => {
               ) : (
                 <>
                   <li>
-                    <Link
-                      to={``}
-                      className="nav-link"
-                      onClick={handleShowLoginModal}
-                    >
+                    <button className="nav-link" onClick={handleShowLoginModal}>
                       <FontAwesomeIcon icon={faDoorOpen} />
                       로그인
-                    </Link>
+                    </button>
                   </li>
                   <li>
-                    <Link
-                      to={``}
+                    <button
                       className="nav-link"
                       onClick={handleShowSignupModal}
                     >
                       <FontAwesomeIcon icon={faDoorOpen} />
                       회원가입
-                    </Link>
+                    </button>
                   </li>
                 </>
               )}
             </ul>
-          </div>
+          </details>
         </div>
         <div className="navbar-center">
           <Link className="btn btn-ghost text-xl" to={`/`}>
@@ -226,16 +189,9 @@ const Header = () => {
           </Link>
         </div>
         <div className="navbar-end">
-          {/* 24.03.14 메모. 알림 버튼은 추후 isLogin을 해야지만 보이도록 설정. 
-           현재 개발단계로 isLogin이 false 일 때 보이게 함.*/}
-          {/* 24.03.14 메모. open or close를 위한
-          Dropdown menu using <details> tag 선택지는 잠시 보류 */}
-          {isLogin ? (
-            ''
-          ) : (
+          {loginState ? (
             <>
               <div className="dropdown dropdown-end dropdown-bottom">
-                {/* <div tabIndex={0} role="button"> */}
                 <button
                   className="btn btn-circle btn-ghost"
                   onClick={showNotification}
@@ -289,6 +245,8 @@ const Header = () => {
                 </ul>
               </div>
             </>
+          ) : (
+            ''
           )}
         </div>
       </div>

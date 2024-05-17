@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { useShowLoginModal } from '../../store/display/displayState';
 import { useLoginState } from '../../store/auth/loginState';
+import { useShowLoginModal } from '../../store/display/displayState';
 
 import {
   toastNotice,
@@ -28,25 +28,29 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: loginApi,
-    onSuccess: (data) => {
+    onSuccess: (data: {
+      data?: {
+        nickname: string,
+        username: string,
+      },
+      msg?: string,
+      resultCode?: string,
+      error: any,
+    }) => {
       if (data.error) {
         // 에러 메시지가 존재하는 경우
-        console.error('Login Error:', data.error); // 에러 메시지 토스트로 표시
         toastWarning('존재하지 않는 회원입니다.');
         logout.mutate(); // 로그아웃 처리
       } else {
         // 에러가 없는 경우
-        setUserName(data.data.username);
-        setNickName(data.data.nickname);
+        setUserName(data.data?.username as string);
+        setNickName(data.data?.nickname as string);
         setIsLogin();
         setShowLoginModal(false); // 로그인 성공 후 모달 닫기
-        console.log('로그인');
         toastNotice('로그인 완료.'); // 성공 메시지 토스트로 표시
       }
     },
     onError: (error: Error) => {
-      console.error('login Error:', error);
-
       logout.mutate();
     },
   });
@@ -75,7 +79,6 @@ export const useLogout = () => {
     },
     onError: (error) => {
       // 로그아웃 실패 시 처리할 작업 수행
-      console.error('로그아웃 에러:', error.message);
     },
   });
 };

@@ -5,7 +5,7 @@
  * @description 단일 이미지 글 댓글
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { useLoginState } from '../../store/auth/loginState';
 import CreateCommentBox from './CreateMainCommentBox';
 import MainCommentBox from './MainCommentBox';
 
@@ -35,18 +35,22 @@ type ICommentType = {
 };
 
 const CommentContainer = (props: ICommentType) => {
+  const { loginState } = useLoginState();
   return (
     <div className={'flex flex-col gap-4 '}>
-      <CreateCommentBox {...props} />
+      {loginState && <CreateCommentBox {...props} />}
+      <div className={"py-[1rem] bg-gray-100"}>
+      <div> 댓글 갯수 : {props.commentList.length} </div>
       {props.commentList?.map((i: commentListType) => (
         <div
-          key={uuidv4()}
-          id={'comment-main-container'}
-          className={'flex flex-col gap-2'}
+        key={i.id}
+        id={'comment-main-container'}
+        className={'flex flex-col gap-2'}
         >
           <MainCommentBox {...i} articleId={props.articleId} />
         </div>
       ))}
+      </div>
     </div>
   );
 };

@@ -1,20 +1,24 @@
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-const SearchBar = () => {
+import { useLocation, useNavigate } from 'react-router-dom';
+const SearchBar = ({ articleDataCount }: { articleDataCount?: number }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const keyword = params.get('tagName');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<{ tagName: string }>();
   const onSubmit = (data: { tagName: string }) => {
-    navigate(`/home?search=${data.tagName}`);
+    navigate(`/?tagName=${data.tagName}`);
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mb-12 ">
       <div className="flex justify-center">
-        <div className="relative flex w-full max-w-md items-center ">
+        <div className="relative flex w-full max-w-md flex-col items-center ">
           <input
             type="text"
             placeholder="이미지 검색"
@@ -39,6 +43,7 @@ const SearchBar = () => {
               </svg>
             </button>
           </label>
+          <div> 검색결과 : {keyword || getValues('tagName')} , 총 결과 수 : {articleDataCount} </div>
         </div>
       </div>
     </form>

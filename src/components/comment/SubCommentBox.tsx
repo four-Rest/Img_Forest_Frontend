@@ -18,6 +18,7 @@ type SubCommentBoxType = {
   createdDate: string;
   modifiedDate: string;
   parentCommentId: number;
+  writer: string;
 };
 const SubCommentBox = (props: SubCommentBoxType) => {
   const textRef = useRef<HTMLTextAreaElement>(null);
@@ -50,12 +51,17 @@ const SubCommentBox = (props: SubCommentBoxType) => {
       className={'ml-4 flex flex-col gap-2 rounded-lg bg-orange-100 p-2'}
     >
       <div className={'flex items-center gap-4'}>
-        <div> {props.username} </div>
+        {
+          props.username == props.writer ?
+          <div className={"font-bold bg-red-400 text-white rounded-lg px-[0.25rem]"}> 작성자 </div>  
+          :
+          <div> {props.username} </div>}
         <span className={'text-sm text-gray-400'}>
           {timeFunction.timeFromToday(new Date(props.createdDate))}
         </span>
       </div>
       <Textarea
+        className={"bg-white p-[0.5rem] "}
         ref={textRef}
         defaultValue={props.content}
         disabled={!isModifyStatus}

@@ -2,6 +2,7 @@
 
 import {
   faAddressCard,
+  faCoins,
   faDoorClosed,
   faDoorOpen,
   faHome,
@@ -152,6 +153,11 @@ const Header = () => {
                   <li>
                     <Link to={`/article/create`}>
                       <FontAwesomeIcon icon={faPen} /> 글 쓰기
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/mypage/point`}>
+                      <FontAwesomeIcon icon={faCoins} /> 내 포인트
                     </Link>
                   </li>
                   <li>

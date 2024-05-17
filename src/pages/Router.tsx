@@ -11,7 +11,9 @@ import Payment from './Payment';
 import MyArticles from './mypage/MyArticles';
 import MyBuyList from './mypage/MyBuyList';
 import MyPersonelInformation from './mypage/MyPersonelInformation';
+import MyPoint from './mypage/MyPoint';
 import MySellList from './mypage/MySellList';
+import TossPaymentSuccess from './mypage/TossPaymentSuccess';
 
 function Router() {
   return (
@@ -37,10 +39,14 @@ function Router() {
               {/* <Route path="/mypage/like-list" element={<MyLikeList />} /> */}
               <Route path="/mypage/buy-list" element={<MyBuyList />} />
               <Route path="/mypage/sell-list" element={<MySellList />} />
+              <Route path="/mypage/point" element={<MyPoint />} />
               {/* <Route path="/check-social-login" element={<CheckSocialLogin />} /> */}
             </Routes>
           </main>
           <Footer />
+          <Routes>
+            <Route path="/success" element={<TossPaymentSuccess />} />
+          </Routes>
         </BrowserRouter>
       </ErrorBoundary>
     </div>

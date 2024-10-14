@@ -14,6 +14,8 @@ const getArticleData = async (pageParam = 1, keyword?: string | null) => {
   }
 
   const data = await response.json();
+  console.log("data 확인");
+  console.log(data); // 응답 로그 확인
 
   // content가 없거나 null일 경우 빈 배열로 반환
   return {

@@ -75,11 +75,26 @@ function HomePaging() {
         const res = await fetch(
           `${apiUrl}/api/article?pageNo=${pageNo}&pageSize=${pageSize}`
         );
+
+        if (!res.ok) {
+          console.error("API 호출 오류:", res.status, res.statusText);
+          return;
+        }
+
         const data = await res.json();
-        console.log(data.data);
+        console.log(data);
+
+          // data.data가 배열이 아닐 경우 배열로 변경
+        let articles = [];
+        if (Array.isArray(data.data)) {
+          articles = data.data; // 이미 배열인 경우
+        } else if (data.data) {
+          articles = [data.data]; // 단일 객체인 경우 배열로 감싸기
+        } // data.data가 null 또는 undefined인 경우 articles는 빈 배열로 유지됨
+
         // setArticleData(prevData => prevData.concat(data.data));
         setArticleData((prevData) => {
-          const newData = data.data.filter(
+          const newData = articles.filter(
             (newArticle) =>
               !prevData.some((prevArticle) => prevArticle.id === newArticle.id)
           );

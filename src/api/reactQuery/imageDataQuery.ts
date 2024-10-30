@@ -7,6 +7,10 @@ const getArticleData = async (pageParam = 1, keyword?: string | null) => {
   const tagName = !keyword ? 'null' : keyword; // keyword가 null, undefined 또는 빈 문자열일 경우 'null'로 설정
   const response = await fetch(
     `${apiUrl}/api/article/page?pageNo=${pageParam - 1}&tagName=${tagName}`,
+    {
+      method: 'GET',
+      mode: 'cors', // CORS 모드 설정
+    }
   );
 
   if (!response.ok) {

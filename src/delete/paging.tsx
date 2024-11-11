@@ -26,6 +26,10 @@ function Paging({
   let urlParam = '';
   let dataFilter = '';
 
+  console.log('Page No:', pageNo);
+  console.log('Total Pages:', totalPages);
+  console.log('Article Data:', articleData);
+  
   const target = useRef(null);
   const handleImageClick = (id: any) => {
     setIdDetail(id);

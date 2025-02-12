@@ -6,7 +6,7 @@ const Detail = () => {
   const [detail, setDetail] = useState(null);
   const apiUrl = process.env.REACT_APP_CORE_API_BASE_URL;
   const imgUrl = process.env.REACT_APP_CORE_IMAGE_BASE_URL;
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
